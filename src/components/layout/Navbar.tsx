@@ -1,16 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-
-const navLinks = [
-  { name: "Главная", path: "/" },
-  { name: "Портфолио", path: "/portfolio" },
-  { name: "Услуги", path: "/pricing" },
-  { name: "Обо мне", path: "/about" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Navbar() {
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
+
+  const navLinks = [
+    { name: t('nav.home'), path: "/" },
+    { name: t('nav.portfolio'), path: "/portfolio" },
+    { name: t('nav.pricing'), path: "/pricing" },
+    { name: t('nav.about'), path: "/about" },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-center">
@@ -42,12 +44,30 @@ export function Navbar() {
             );
           })}
         </div>
-        <Link
-          to="/about"
-          className="hidden md:inline-flex items-center justify-center px-5 py-2 text-sm font-semibold text-white bg-brand-pink rounded-full hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.4)] hover:shadow-[0_0_30px_rgba(247,6,112,0.6)]"
-        >
-          Обсудить проект
-        </Link>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-sm font-medium bg-white/5 rounded-full px-2 py-1 border border-white/10">
+            <button 
+              onClick={() => setLanguage('ru')}
+              className={cn("px-2 py-1 rounded-full transition-colors", language === 'ru' ? "bg-brand-pink text-white" : "text-white/60 hover:text-white")}
+            >
+              RU
+            </button>
+            <button 
+              onClick={() => setLanguage('en')}
+              className={cn("px-2 py-1 rounded-full transition-colors", language === 'en' ? "bg-brand-pink text-white" : "text-white/60 hover:text-white")}
+            >
+              EN
+            </button>
+          </div>
+
+          <Link
+            to="/about"
+            className="hidden md:inline-flex items-center justify-center px-5 py-2 text-sm font-semibold text-white bg-brand-pink rounded-full hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.4)] hover:shadow-[0_0_30px_rgba(247,6,112,0.6)]"
+          >
+            {t('nav.discuss')}
+          </Link>
+        </div>
       </nav>
     </header>
   );

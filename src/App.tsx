@@ -12,6 +12,7 @@ import { Home } from "./pages/Home";
 import { Portfolio } from "./pages/Portfolio";
 import { Pricing } from "./pages/Pricing";
 import { About } from "./pages/About";
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -23,21 +24,23 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <div className="min-h-screen bg-brand-dark text-brand-light font-sans selection:bg-brand-pink/30 selection:text-white">
-        <GlowBackground />
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <div className="min-h-screen bg-brand-dark text-brand-light font-sans selection:bg-brand-pink/30 selection:text-white">
+          <GlowBackground />
+          <Navbar />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/about" element={<About />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }

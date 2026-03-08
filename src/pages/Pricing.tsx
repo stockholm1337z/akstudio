@@ -1,51 +1,54 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const packages = [
-  {
-    name: "Лендинг",
-    price: "от ₽10000",
-    desc: "Идеально для запуска продукта, мероприятия или сбора лидов.",
-    features: [
-      "Уникальный премиум-дизайн",
-      "Адаптивная верстка (React/Tailwind)",
-      "Базовые анимации (Framer Motion)",
-      "Интеграция форм заявки",
-      "Базовая SEO-оптимизация"
-    ],
-    popular: false
-  },
-  {
-    name: "Корпоративный сайт",
-    price: "от ₽15000",
-    desc: "Многостраничный сайт для полноценного представления компании.",
-    features: [
-      "До 10 уникальных страниц",
-      "Сложные интерактивные элементы",
-      "CMS для управления контентом",
-      "Продвинутые анимации",
-      "Оптимизация скорости загрузки",
-      "Поддержка 1 месяц"
-    ],
-    popular: true
-  },
-  {
-    name: "Frontend Разработка",
-    price: "₽2000/час",
-    desc: "Реализация вашего готового дизайна на современном стеке.",
-    features: [
-      "Pixel-perfect верстка",
-      "React / Next.js / Vue",
-      "Сложные WebGL/Canvas эффекты",
-      "Интеграция с API",
-      "Рефакторинг старого кода"
-    ],
-    popular: false
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Pricing() {
+  const { t } = useLanguage();
+
+  const packages = [
+    {
+      name: t('pricing.landing'),
+      price: t('pricing.landing.price'),
+      desc: t('pricing.landing.desc'),
+      features: [
+        t('pricing.landing.f1'),
+        t('pricing.landing.f2'),
+        t('pricing.landing.f3'),
+        t('pricing.landing.f4'),
+        t('pricing.landing.f5')
+      ],
+      popular: false
+    },
+    {
+      name: t('pricing.corp'),
+      price: t('pricing.corp.price'),
+      desc: t('pricing.corp.desc'),
+      features: [
+        t('pricing.corp.f1'),
+        t('pricing.corp.f2'),
+        t('pricing.corp.f3'),
+        t('pricing.corp.f4'),
+        t('pricing.corp.f5'),
+        t('pricing.corp.f6')
+      ],
+      popular: true
+    },
+    {
+      name: t('pricing.front'),
+      price: t('pricing.front.price'),
+      desc: t('pricing.front.desc'),
+      features: [
+        t('pricing.front.f1'),
+        t('pricing.front.f2'),
+        t('pricing.front.f3'),
+        t('pricing.front.f4'),
+        t('pricing.front.f5')
+      ],
+      popular: false
+    }
+  ];
+
   return (
     <div className="min-h-screen pt-32 pb-16 px-6 relative z-10">
       <div className="max-w-7xl mx-auto">
@@ -55,10 +58,10 @@ export function Pricing() {
           className="text-center mb-16"
         >
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-6">
-            Инвестиции в <span className="text-brand-pink">результат</span>
+            {t('pricing.title1')} <span className="text-brand-pink">{t('pricing.title2')}</span>
           </h1>
           <p className="text-xl text-white/60 max-w-2xl mx-auto">
-            Прозрачное ценообразование. Вы платите за премиальное качество, соблюдение сроков и внимание к деталям.
+            {t('pricing.desc')}
           </p>
         </motion.div>
 
@@ -77,7 +80,7 @@ export function Pricing() {
             >
               {pkg.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-pink text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                  Популярный выбор
+                  {t('pricing.popular')}
                 </div>
               )}
               
@@ -102,7 +105,7 @@ export function Pricing() {
                     : "bg-white/10 text-white hover:bg-white/20"
                 }`}
               >
-                Выбрать тариф
+                {t('pricing.choose')}
               </Link>
             </motion.div>
           ))}

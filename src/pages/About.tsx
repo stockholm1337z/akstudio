@@ -1,8 +1,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Mail, MessageCircle, Send } from "lucide-react";
 import { MouseEvent } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function About() {
+  const { t } = useLanguage();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -43,25 +45,25 @@ export function About() {
             className="relative z-20"
           >
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-8">
-              Давайте <span className="text-brand-pink">знакомиться</span>
+              {t('about.title1')} <span className="text-brand-pink">{t('about.title2')}</span>
             </h1>
             
             <div className="space-y-6 text-lg text-white/70 mb-12">
               <p>
-                Я — frontend-разработчик и дизайнер интерфейсов с фокусом на премиальный визуальный опыт. Моя цель — не просто написать код, а создать продукт, который вызывает эмоции и приносит прибыль.
+                {t('about.desc1')}
               </p>
               <p>
-                В своей работе я объединяю строгую инженерную логику с креативным подходом. Я верю, что хороший дизайн должен быть не только красивым, но и функциональным, быстрым и доступным.
+                {t('about.desc2')}
               </p>
             </div>
 
-            <h3 className="text-2xl font-display font-bold mb-6">Мой процесс</h3>
+            <h3 className="text-2xl font-display font-bold mb-6">{t('about.process.title')}</h3>
             <div className="space-y-6 mb-12">
               {[
-                { step: "01", title: "Брифинг и аналитика", desc: "Погружаюсь в ваш бизнес, изучаю аудиторию и конкурентов." },
-                { step: "02", title: "Концепт и дизайн", desc: "Создаю визуальную систему, прототипы и премиальный UI." },
-                { step: "03", title: "Разработка и анимации", desc: "Верстаю pixel-perfect, добавляю плавные motion-эффекты." },
-                { step: "04", title: "Запуск и поддержка", desc: "Тестирую, оптимизирую и помогаю с развитием проекта." }
+                { step: "01", title: t('about.process.1.title'), desc: t('about.process.1.desc') },
+                { step: "02", title: t('about.process.2.title'), desc: t('about.process.2.desc') },
+                { step: "03", title: t('about.process.3.title'), desc: t('about.process.3.desc') },
+                { step: "04", title: t('about.process.4.title'), desc: t('about.process.4.desc') }
               ].map((item, i) => (
                 <div key={i} className="flex gap-6">
                   <div className="text-brand-pink font-mono font-bold text-xl">{item.step}</div>
@@ -76,7 +78,7 @@ export function About() {
             <div className="flex flex-col sm:flex-row gap-4">
               <a href="https://t.me/reasonace1337" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#229ED9]/10 text-[#229ED9] border border-[#229ED9]/30 hover:bg-[#229ED9]/20 transition-colors font-bold">
                 <MessageCircle className="w-5 h-5" />
-                Написать в Telegram
+                {t('about.contact.tg')}
               </a>
               <a href="mailto:alexey_kalyan@mail.ru" className="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-colors font-bold">
                 <Mail className="w-5 h-5" />
@@ -129,41 +131,41 @@ export function About() {
         >
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
             <div className="lg:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">Оставить заявку</h3>
-              <p className="text-white/50 text-lg">Расскажите вкратце о вашей задаче, и я свяжусь с вами в течение дня для обсуждения деталей.</p>
+              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('about.form.title')}</h3>
+              <p className="text-white/50 text-lg">{t('about.form.desc')}</p>
             </div>
             
             <div className="lg:col-span-3">
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">Ваше имя</label>
+                    <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.nameLabel')}</label>
                     <input 
                       type="text" 
                       className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder="Иван Иванов"
+                      placeholder={t('about.form.namePlaceholder')}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">Email или Telegram</label>
+                    <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.contactLabel')}</label>
                     <input 
                       type="text" 
                       className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder="@username или email@domain.com"
+                      placeholder={t('about.form.contactPlaceholder')}
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">О проекте</label>
+                  <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.projectLabel')}</label>
                   <textarea 
                     rows={3}
                     className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors resize-none"
-                    placeholder="Какая задача стоит перед вами?"
+                    placeholder={t('about.form.projectPlaceholder')}
                   />
                 </div>
                 <div className="flex justify-end">
                   <button className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-brand-pink text-white font-bold py-4 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.3)]">
-                    Отправить <Send className="w-5 h-5" />
+                    {t('about.form.submit')} <Send className="w-5 h-5" />
                   </button>
                 </div>
               </form>

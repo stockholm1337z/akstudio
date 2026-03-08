@@ -1,43 +1,90 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useRef, useState } from "react";
-
-const projects = [
-  {
-    title: "Launch an Instagram account for a beauty studio from scratch.",
-    desc: "3,100 subscribers in the first 2 weeks, recording for 2 weeks ahead.",
-    img: "https://picsum.photos/seed/beauty/600/800"
-  },
-  {
-    title: "Rebranding and web design for a local coffee shop.",
-    desc: "Increased foot traffic by 40% and online orders by 150%.",
-    img: "https://picsum.photos/seed/coffee/600/800"
-  },
-  {
-    title: "E-commerce platform for a fashion boutique.",
-    desc: "Conversion rate optimization leading to $100k+ monthly revenue.",
-    img: "https://picsum.photos/seed/fashion/600/800"
-  },
-  {
-    title: "Fitness app UI/UX design and user research.",
-    desc: "10k+ downloads in the first month with a 4.9 star rating.",
-    img: "https://picsum.photos/seed/fitness/600/800"
-  },
-  {
-    title: "Corporate identity for a tech startup.",
-    desc: "Secured $2M in seed funding with the new pitch deck and branding.",
-    img: "https://picsum.photos/seed/tech/600/800"
-  }
-];
+import { DNASpiral } from "../components/DNASpiral";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Portfolio() {
+  const { t } = useLanguage();
+  const projects = [
+    {
+      title: t('portfolio.projects.1.title'),
+      desc: t('portfolio.projects.1.desc'),
+      img: "https://picsum.photos/seed/beauty/600/800"
+    },
+    {
+      title: t('portfolio.projects.2.title'),
+      desc: t('portfolio.projects.2.desc'),
+      img: "https://picsum.photos/seed/coffee/600/800"
+    },
+    {
+      title: t('portfolio.projects.3.title'),
+      desc: t('portfolio.projects.3.desc'),
+      img: "https://picsum.photos/seed/fashion/600/800"
+    },
+    {
+      title: t('portfolio.projects.4.title'),
+      desc: t('portfolio.projects.4.desc'),
+      img: "https://picsum.photos/seed/fitness/600/800"
+    },
+    {
+      title: t('portfolio.projects.5.title'),
+      desc: t('portfolio.projects.5.desc'),
+      img: "https://picsum.photos/seed/tech/600/800"
+    }
+  ];
+
+  const servicesList = [
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.1.title'),
+      image: "/design.png"
+    },
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.2.title'),
+      image: "/web.png"
+    },
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.3.title'),
+      image: "/motion.png"
+    },
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.4.title'),
+      image: "/ui.png"
+    },
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.5.title'),
+      image: "/corporate.png"
+    },
+    {
+      category: t('portfolio.servicesList.category'),
+      title: t('portfolio.servicesList.6.title'),
+      image: "https://picsum.photos/seed/other/400/400"
+    }
+  ];
+
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const servicesScrollRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [activeIndex, setActiveIndex] = useState(2);
+
+  const scrollServices = (direction: 'left' | 'right') => {
+    if (servicesScrollRef.current) {
+      const scrollAmount = 300; // Adjust based on card width
+      servicesScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return;
@@ -76,7 +123,7 @@ export function Portfolio() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white relative overflow-hidden pt-24 pb-24" ref={containerRef}>
+    <div className="min-h-screen bg-[#050505] text-white relative overflow-hidden pt-24" ref={containerRef}>
       {/* 1. Global Backgrounds */}
       <div className="fixed inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
@@ -148,11 +195,11 @@ export function Portfolio() {
                   </h2>
                   
                   <p className="mt-8 text-white/60 max-w-xs text-sm md:text-base">
-                    We are a team of design experts helping businesses grow through visual identity.
+                    {t('portfolio.hero.desc')}
                   </p>
                   
                   <button className="mt-8 bg-brand-pink text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-black transition-colors duration-300 flex items-center gap-2 uppercase tracking-wider text-sm">
-                    Консультация
+                    {t('portfolio.consultation')}
                   </button>
                 </div>
 
@@ -166,8 +213,8 @@ export function Portfolio() {
                     className="bg-white text-black p-8 rounded-[2rem] w-full sm:w-[240px] flex flex-col justify-between aspect-square shadow-2xl"
                   >
                     <div>
-                      <h3 className="text-4xl font-bold mb-2">$60k+</h3>
-                      <p className="text-black/60 text-xs leading-relaxed">we manage the advertising budget every month</p>
+                      <h3 className="text-4xl font-bold mb-2">{t('portfolio.stats.budget.title')}</h3>
+                      <p className="text-black/60 text-xs leading-relaxed">{t('portfolio.stats.budget.desc')}</p>
                     </div>
                     <div className="w-10 h-10 bg-brand-pink rounded-full flex items-center justify-center text-white self-end">
                       <ArrowRight className="w-5 h-5" />
@@ -189,8 +236,8 @@ export function Portfolio() {
                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 mix-blend-overlay pointer-events-none"></div>
                       
                       <div className="relative z-10">
-                        <h3 className="text-4xl font-bold mb-2">1.3k+</h3>
-                        <p className="text-white/60 text-xs leading-relaxed">we create unique posts and creatives every month for growing brands</p>
+                        <h3 className="text-4xl font-bold mb-2">{t('portfolio.stats.posts.title')}</h3>
+                        <p className="text-white/60 text-xs leading-relaxed">{t('portfolio.stats.posts.desc')}</p>
                       </div>
                       <div className="relative z-10 w-10 h-10 bg-brand-pink rounded-full flex items-center justify-center text-white self-end">
                         <ArrowRight className="w-5 h-5" />
@@ -204,12 +251,12 @@ export function Portfolio() {
               <div className="pt-32 pb-12 flex justify-end">
                 <div className="max-w-4xl text-right">
                   <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
-                    <span className="block text-white">мы превращаем</span>
-                    <span className="block text-brand-pink">подписчиков</span>
-                    <span className="block text-white">в клиентов</span>
+                    <span className="block text-white">{t('portfolio.transform.title1')}</span>
+                    <span className="block text-brand-pink">{t('portfolio.transform.title2')}</span>
+                    <span className="block text-white">{t('portfolio.transform.title3')}</span>
                   </h2>
                   <p className="mt-6 text-white/60 max-w-sm ml-auto text-sm md:text-base text-right">
-                    Our approach is based on analytics, creativity and effective marketing strategies.
+                    {t('portfolio.transform.desc')}
                   </p>
                 </div>
               </div>
@@ -222,33 +269,33 @@ export function Portfolio() {
             {/* Top Section: "we are next-gen..." */}
             <div className="flex flex-col items-center text-center mb-16">
               <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-12">
-                <span className="text-white">we are </span>
-                <span className="text-brand-pink">next-gen</span>
+                <span className="text-white">{t('portfolio.nextgen.title1')} </span>
+                <span className="text-brand-pink">{t('portfolio.nextgen.title2')}</span>
                 <br />
-                <span className="text-white">design company</span>
+                <span className="text-white">{t('portfolio.nextgen.title3')}</span>
               </h2>
 
               {/* Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                 {/* Card 1 */}
                 <div className="bg-white text-black p-8 rounded-3xl lg:rounded-l-[4rem] lg:rounded-r-2xl flex flex-col items-start text-left h-[280px]">
-                  <h3 className="text-2xl font-bold mb-4 leading-tight">UI/UX<br/>Design</h3>
-                  <p className="text-black/60 text-sm">User research, wireframing, prototyping, and high-fidelity interface design.</p>
+                  <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.uiux.title')}</h3>
+                  <p className="text-black/60 text-sm">{t('portfolio.services.uiux.desc')}</p>
                 </div>
                 {/* Card 2 (Pink) */}
                 <div className="bg-brand-pink text-white p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px] relative overflow-hidden">
-                  <h3 className="text-2xl font-bold mb-4 leading-tight relative z-10">Brand<br/>Identity</h3>
-                  <p className="text-white/80 text-sm relative z-10">Logo design, brand guidelines, typography, and visual language.</p>
+                  <h3 className="text-2xl font-bold mb-4 leading-tight relative z-10 whitespace-pre-line">{t('portfolio.services.brand.title')}</h3>
+                  <p className="text-white/80 text-sm relative z-10">{t('portfolio.services.brand.desc')}</p>
                 </div>
                 {/* Card 3 */}
                 <div className="bg-white text-black p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px]">
-                  <h3 className="text-2xl font-bold mb-4 leading-tight">Web<br/>Development</h3>
-                  <p className="text-black/60 text-sm">Front-end development, animations, responsive design, and CMS integration.</p>
+                  <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.web.title')}</h3>
+                  <p className="text-black/60 text-sm">{t('portfolio.services.web.desc')}</p>
                 </div>
                 {/* Card 4 */}
                 <div className="bg-white text-black p-8 rounded-3xl lg:rounded-r-[4rem] lg:rounded-l-2xl flex flex-col items-start text-left h-[280px]">
-                  <h3 className="text-2xl font-bold mb-4 leading-tight">Motion<br/>Graphics</h3>
-                  <p className="text-black/60 text-sm">2D/3D animations, promotional videos, and interactive web elements.</p>
+                  <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.motion.title')}</h3>
+                  <p className="text-black/60 text-sm">{t('portfolio.services.motion.desc')}</p>
                 </div>
               </div>
             </div>
@@ -258,9 +305,9 @@ export function Portfolio() {
               {/* Left: Text & Tags */}
               <div className="flex-1 max-w-xl">
                 <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-10">
-                  <span className="block text-white">data that</span>
-                  <span className="block text-white">proves</span>
-                  <span className="block text-brand-pink">our impact</span>
+                  <span className="block text-white">{t('portfolio.data.title1')}</span>
+                  <span className="block text-white">{t('portfolio.data.title2')}</span>
+                  <span className="block text-brand-pink">{t('portfolio.data.title3')}</span>
                 </h2>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -286,18 +333,18 @@ export function Portfolio() {
                   {/* Card 1 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Our key results</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card1.title')}</h3>
                       <p className="text-black/60 text-xs mb-6 leading-relaxed">
-                        Targeted design campaigns that reach the right audience at the right time.
+                        {t('portfolio.data.card1.desc')}
                       </p>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <div className="text-brand-pink text-3xl font-bold mb-1">3x</div>
-                          <div className="text-[10px] font-bold leading-tight">better conversion</div>
+                          <div className="text-[10px] font-bold leading-tight">{t('portfolio.data.card1.stat1')}</div>
                         </div>
                         <div>
                           <div className="text-brand-pink text-3xl font-bold mb-1">+65%</div>
-                          <div className="text-[10px] font-bold leading-tight">ROI improvement</div>
+                          <div className="text-[10px] font-bold leading-tight">{t('portfolio.data.card1.stat2')}</div>
                         </div>
                       </div>
                     </div>
@@ -306,9 +353,9 @@ export function Portfolio() {
                   {/* Card 2 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Budget in 2024</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card2.title')}</h3>
                       <p className="text-black/60 text-xs leading-relaxed">
-                        Strategically allocated to reach the target audience and drive conversions.
+                        {t('portfolio.data.card2.desc')}
                       </p>
                     </div>
                     <div className="text-brand-pink text-5xl font-display font-black mt-8">$613k</div>
@@ -317,9 +364,9 @@ export function Portfolio() {
                   {/* Card 3 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Satisfaction</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card3.title')}</h3>
                       <p className="text-black/60 text-xs leading-relaxed">
-                        Based on post-project surveys across all our enterprise clients.
+                        {t('portfolio.data.card3.desc')}
                       </p>
                     </div>
                     <div className="text-brand-pink text-5xl font-display font-black mt-8">98%</div>
@@ -328,9 +375,9 @@ export function Portfolio() {
                   {/* Card 4 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Projects Delivered</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card4.title')}</h3>
                       <p className="text-black/60 text-xs leading-relaxed">
-                        Successfully launched digital products, brands, and marketing campaigns.
+                        {t('portfolio.data.card4.desc')}
                       </p>
                     </div>
                     <div className="text-brand-pink text-5xl font-display font-black mt-8">150+</div>
@@ -339,9 +386,9 @@ export function Portfolio() {
                   {/* Card 5 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Global Reach</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card5.title')}</h3>
                       <p className="text-black/60 text-xs leading-relaxed">
-                        Working with clients and partners across multiple continents and timezones.
+                        {t('portfolio.data.card5.desc')}
                       </p>
                     </div>
                     <div className="text-brand-pink text-5xl font-display font-black mt-8">24</div>
@@ -350,9 +397,9 @@ export function Portfolio() {
                   {/* Card 6 */}
                   <div className="min-w-[260px] bg-white text-black p-8 rounded-[2rem] snap-start flex-shrink-0 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4">Awards Won</h3>
+                      <h3 className="text-2xl font-bold mb-4">{t('portfolio.data.card6.title')}</h3>
                       <p className="text-black/60 text-xs leading-relaxed">
-                        Recognized by Awwwards, CSS Design Awards, and other industry leaders.
+                        {t('portfolio.data.card6.desc')}
                       </p>
                     </div>
                     <div className="text-brand-pink text-5xl font-display font-black mt-8">12</div>
@@ -383,11 +430,11 @@ export function Portfolio() {
             {/* Header */}
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between mb-20 gap-8">
               <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
-                <span className="block text-white">who our</span>
-                <span className="block text-white">services</span>
+                <span className="block text-white">{t('portfolio.who.title1')}</span>
+                <span className="block text-white">{t('portfolio.who.title2')}</span>
               </h2>
-              <h3 className="text-2xl md:text-3xl font-bold text-white/80 max-w-sm leading-tight mb-2">
-                / are the perfect<br/>solution for
+              <h3 className="text-2xl md:text-3xl font-bold text-white/80 max-w-sm leading-tight mb-2 whitespace-pre-line">
+                {t('portfolio.who.subtitle')}
               </h3>
             </div>
 
@@ -399,7 +446,7 @@ export function Portfolio() {
                 {/* Row 1 */}
                 <div className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">01</div>
-                  <div className="text-black font-bold text-xl leading-tight">Small and Medium-<br/>Sized Businesses</div>
+                  <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card1')}</div>
                 </div>
                 <div className="col-start-7 col-span-5 rounded-[2.5rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl z-10 relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-pink via-[#ff0055] to-[#cc0044] z-0"></div>
@@ -408,10 +455,10 @@ export function Portfolio() {
                   <div className="relative z-10 flex justify-between items-start h-full">
                     <div className="text-white text-5xl font-display font-medium">02</div>
                     <div className="text-white/90 text-xs max-w-[220px] leading-relaxed text-right">
-                      High-level targeted advertising attracts students and clients seeking professional education or consulting, increasing sign-ups and inquiries.
+                      {t('portfolio.who.card2.desc')}
                     </div>
                   </div>
-                  <div className="relative z-10 text-white font-bold text-xl leading-tight mt-auto">Educational and<br/>Consulting<br/>Services</div>
+                  <div className="relative z-10 text-white font-bold text-xl leading-tight mt-auto whitespace-pre-line">{t('portfolio.who.card2.title')}</div>
                 </div>
 
                 {/* Row 2 */}
@@ -419,21 +466,21 @@ export function Portfolio() {
                   <div className="absolute inset-0 bg-gradient-to-br from-[#ff0055] to-brand-pink z-0"></div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-black/10 blur-2xl rounded-full z-0"></div>
                   <div className="relative z-10 text-white text-5xl font-display font-medium">03</div>
-                  <div className="relative z-10 text-white font-bold text-xl leading-tight">Marketing<br/>Agencies</div>
+                  <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card3')}</div>
                 </div>
                 <div className="col-start-6 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">04</div>
-                  <div className="text-white font-bold text-xl leading-tight">E-commerce<br/>Stores</div>
+                  <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card4')}</div>
                 </div>
 
                 {/* Row 3 */}
                 <div className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">05</div>
-                  <div className="text-black font-bold text-xl leading-tight">Corporate<br/>Clients</div>
+                  <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card5')}</div>
                 </div>
                 <div className="col-start-8 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">06</div>
-                  <div className="text-white font-bold text-xl leading-tight">Startups</div>
+                  <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card6')}</div>
                 </div>
               </div>
 
@@ -442,7 +489,7 @@ export function Portfolio() {
                 {/* Card 1 */}
                 <div className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">01</div>
-                  <div className="text-black font-bold text-xl leading-tight">Small and Medium-<br/>Sized Businesses</div>
+                  <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card1')}</div>
                 </div>
                 {/* Card 2 */}
                 <div className="w-full rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative min-h-[250px]">
@@ -451,30 +498,30 @@ export function Portfolio() {
                     <div className="text-white text-5xl font-display font-medium">02</div>
                   </div>
                   <div className="relative z-10 text-white/90 text-xs mb-4 leading-relaxed">
-                      High-level targeted advertising attracts students and clients seeking professional education or consulting, increasing sign-ups and inquiries.
+                      {t('portfolio.who.card2.desc')}
                   </div>
-                  <div className="relative z-10 text-white font-bold text-xl leading-tight">Educational and<br/>Consulting<br/>Services</div>
+                  <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card2.title')}</div>
                 </div>
                 {/* Card 3 */}
                 <div className="w-full aspect-square rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#ff0055] to-brand-pink z-0"></div>
                   <div className="relative z-10 text-white text-5xl font-display font-medium">03</div>
-                  <div className="relative z-10 text-white font-bold text-xl leading-tight">Marketing<br/>Agencies</div>
+                  <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card3')}</div>
                 </div>
                 {/* Card 4 */}
                 <div className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">04</div>
-                  <div className="text-white font-bold text-xl leading-tight">E-commerce<br/>Stores</div>
+                  <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card4')}</div>
                 </div>
                 {/* Card 5 */}
                 <div className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">05</div>
-                  <div className="text-black font-bold text-xl leading-tight">Corporate<br/>Clients</div>
+                  <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card5')}</div>
                 </div>
                 {/* Card 6 */}
                 <div className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">06</div>
-                  <div className="text-white font-bold text-xl leading-tight">Startups</div>
+                  <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card6')}</div>
                 </div>
               </div>
 
@@ -492,10 +539,10 @@ export function Portfolio() {
             {/* Header */}
             <div className="relative z-10 flex flex-col items-center justify-center mb-10 text-center">
               <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
-                <span className="block text-white">our work</span>
+                <span className="block text-white">{t('portfolio.work.title1')}</span>
                 <span className="block">
-                  <span className="text-brand-pink">speaks </span>
-                  <span className="text-white">for us</span>
+                  <span className="text-brand-pink">{t('portfolio.work.title2')} </span>
+                  <span className="text-white">{t('portfolio.work.title3')}</span>
                 </span>
               </h2>
             </div>
@@ -596,17 +643,17 @@ export function Portfolio() {
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16 w-full">
               <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
                 <span className="block">
-                  <span className="text-white">creatives </span>
-                  <span className="text-brand-pink">that</span>
+                  <span className="text-white">{t('portfolio.creatives.title1')} </span>
+                  <span className="text-brand-pink">{t('portfolio.creatives.title2')}</span>
                 </span>
                 <span className="block">
-                  <span className="text-brand-pink">work </span>
-                  <span className="text-white">for you</span>
+                  <span className="text-brand-pink">{t('portfolio.creatives.title3')} </span>
+                  <span className="text-white">{t('portfolio.creatives.title4')}</span>
                 </span>
               </h2>
               
               <button className="bg-white text-black font-bold py-4 px-10 rounded-full hover:bg-brand-pink hover:text-white transition-colors duration-300 uppercase tracking-wider text-sm shadow-xl shrink-0">
-                Consultation
+                {t('portfolio.consultation')}
               </button>
             </div>
 
@@ -623,11 +670,94 @@ export function Portfolio() {
             </div>
             
           </div>
-          <div className="py-32 flex items-center justify-center">
-            <h2 className="text-6xl font-display font-bold text-white/20">scene6</h2>
+          {/* Scene 6: Services / The Team Behind Your Success Style */}
+          <div className="py-24 md:py-32 flex items-center justify-center relative z-10 px-4 md:px-12">
+            <div className="w-full max-w-[1200px] mx-auto bg-[#0a0a0a] rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 border border-white/5 shadow-2xl overflow-hidden relative">
+              
+              {/* Header */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                  <h2 className="text-5xl md:text-7xl font-display font-bold leading-[0.9] tracking-tight">
+                    <span className="text-white block">{t('portfolio.services1')}</span>
+                    <span className="text-brand-pink block mt-2">{t('portfolio.services2')}</span>
+                  </h2>
+                </div>
+                
+                {/* Navigation Arrows */}
+                <div className="flex gap-4 shrink-0">
+                  <button 
+                    onClick={() => scrollServices('left')}
+                    className="w-14 h-14 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft size={24} strokeWidth={2.5} />
+                  </button>
+                  <button 
+                    onClick={() => scrollServices('right')}
+                    className="w-14 h-14 rounded-full bg-brand-pink flex items-center justify-center text-white hover:bg-brand-pink/80 transition-colors"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight size={24} strokeWidth={2.5} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Cards Container */}
+              <div 
+                ref={servicesScrollRef}
+                className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {servicesList.map((service, index) => (
+                  <div 
+                    key={index} 
+                    className="shrink-0 w-[280px] md:w-[320px] bg-[#1a1a1a] rounded-3xl p-4 snap-start border border-white/5 hover:border-brand-pink/30 transition-colors duration-300 group cursor-pointer"
+                  >
+                    <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 relative">
+                      <img 
+                        src={service.image} 
+                        alt={service.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                    </div>
+                    <div className="px-2 pb-2">
+                      <p className="text-brand-pink text-xs font-bold uppercase tracking-wider mb-2">
+                        {service.category}
+                      </p>
+                      <h3 className="text-white text-2xl font-bold underline decoration-white/30 underline-offset-4 group-hover:decoration-white transition-colors">
+                        {service.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination Dots (Visual only) */}
+              <div className="flex justify-center gap-2 mt-4">
+                <div className="w-12 h-1.5 bg-white rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+              </div>
+            </div>
           </div>
-          <div className="py-32 flex items-center justify-center">
-            <h2 className="text-6xl font-display font-bold text-white/20">scene7</h2>
+          {/* Scene 7: DNA Spiral & Start a Project */}
+          <div className="relative w-full h-[80vh] flex items-center justify-center -mt-48 pt-48 z-0">
+            <DNASpiral />
+            
+            <div className="relative z-10 text-center px-4">
+              <a 
+                href="#contact" 
+                className="group inline-block"
+              >
+                <h2 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold text-white transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#F70670] group-hover:to-[#8B5CF6]">
+                  {t('portfolio.startProject')}
+                </h2>
+                <div className="h-1 w-0 bg-gradient-to-r from-[#F70670] to-[#8B5CF6] mx-auto transition-all duration-500 group-hover:w-full mt-4"></div>
+              </a>
+            </div>
           </div>
 
         </div>
