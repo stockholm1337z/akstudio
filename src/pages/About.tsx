@@ -1,0 +1,176 @@
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Mail, MessageCircle, Send } from "lucide-react";
+import { MouseEvent } from "react";
+
+export function About() {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-8deg", "8deg"]);
+  const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-15px", "15px"]);
+  const translateY = useTransform(mouseYSpring, [-0.5, 0.5], ["-15px", "15px"]);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <div className="min-h-screen pt-32 pb-16 px-6 relative z-10 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8">
+          
+          {/* Info Section */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="relative z-20"
+          >
+            <h1 className="text-5xl md:text-7xl font-display font-bold mb-8">
+              Давайте <span className="text-brand-pink">знакомиться</span>
+            </h1>
+            
+            <div className="space-y-6 text-lg text-white/70 mb-12">
+              <p>
+                Я — frontend-разработчик и дизайнер интерфейсов с фокусом на премиальный визуальный опыт. Моя цель — не просто написать код, а создать продукт, который вызывает эмоции и приносит прибыль.
+              </p>
+              <p>
+                В своей работе я объединяю строгую инженерную логику с креативным подходом. Я верю, что хороший дизайн должен быть не только красивым, но и функциональным, быстрым и доступным.
+              </p>
+            </div>
+
+            <h3 className="text-2xl font-display font-bold mb-6">Мой процесс</h3>
+            <div className="space-y-6 mb-12">
+              {[
+                { step: "01", title: "Брифинг и аналитика", desc: "Погружаюсь в ваш бизнес, изучаю аудиторию и конкурентов." },
+                { step: "02", title: "Концепт и дизайн", desc: "Создаю визуальную систему, прототипы и премиальный UI." },
+                { step: "03", title: "Разработка и анимации", desc: "Верстаю pixel-perfect, добавляю плавные motion-эффекты." },
+                { step: "04", title: "Запуск и поддержка", desc: "Тестирую, оптимизирую и помогаю с развитием проекта." }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-6">
+                  <div className="text-brand-pink font-mono font-bold text-xl">{item.step}</div>
+                  <div>
+                    <h4 className="font-bold text-white text-lg mb-1">{item.title}</h4>
+                    <p className="text-white/50">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href="https://t.me/reasonace1337" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#229ED9]/10 text-[#229ED9] border border-[#229ED9]/30 hover:bg-[#229ED9]/20 transition-colors font-bold">
+                <MessageCircle className="w-5 h-5" />
+                Написать в Telegram
+              </a>
+              <a href="mailto:alexey_kalyan@mail.ru" className="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-colors font-bold">
+                <Mail className="w-5 h-5" />
+                alexey_kalyan@mail.ru
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Photo */}
+          <div 
+            className="relative flex flex-col justify-end items-center lg:items-end mt-12 lg:mt-0 min-h-[500px] lg:min-h-[600px] h-full"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ perspective: 1200 }}
+          >
+            {/* Background Photo */}
+            <motion.div 
+              style={{
+                rotateX,
+                rotateY,
+                x: translateX,
+                y: translateY,
+              }}
+              className="absolute inset-0 pointer-events-none z-0"
+            >
+              <div className="relative w-full h-full">
+                {/* Glow behind photo */}
+                <div className="absolute top-[40%] left-1/2 lg:left-[60%] -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-brand-pink/20 blur-[120px] rounded-full" />
+                
+                <img 
+                  src="/profile.png" 
+                  alt="Alexey Kalyan"
+                  className="w-full h-full object-contain object-bottom lg:object-right-bottom opacity-90 drop-shadow-2xl"
+                  style={{
+                    maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)'
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Bottom Section: Horizontal Contact Form */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative bg-[#111111]/40 border border-white/10 p-8 md:p-12 rounded-[2rem] backdrop-blur-2xl w-full z-10 shadow-[0_30px_60px_rgba(0,0,0,0.5)] mt-16"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+            <div className="lg:col-span-2">
+              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">Оставить заявку</h3>
+              <p className="text-white/50 text-lg">Расскажите вкратце о вашей задаче, и я свяжусь с вами в течение дня для обсуждения деталей.</p>
+            </div>
+            
+            <div className="lg:col-span-3">
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-2">Ваше имя</label>
+                    <input 
+                      type="text" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
+                      placeholder="Иван Иванов"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-2">Email или Telegram</label>
+                    <input 
+                      type="text" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
+                      placeholder="@username или email@domain.com"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2">О проекте</label>
+                  <textarea 
+                    rows={3}
+                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors resize-none"
+                    placeholder="Какая задача стоит перед вами?"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-brand-pink text-white font-bold py-4 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.3)]">
+                    Отправить <Send className="w-5 h-5" />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
