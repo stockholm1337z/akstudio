@@ -44,7 +44,7 @@ export function About() {
             animate={{ opacity: 1, x: 0 }}
             className="relative z-20"
           >
-            <h1 className="text-5xl md:text-7xl font-display font-bold mb-8">
+            <h1 className="text-4xl md:text-7xl font-display font-bold mb-8">
               {t('about.title1')} <span className="text-brand-pink">{t('about.title2')}</span>
             </h1>
             

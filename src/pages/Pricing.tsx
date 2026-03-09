@@ -57,7 +57,7 @@ export function Pricing() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6">
+          <h1 className="text-4xl md:text-7xl font-display font-bold mb-6">
             {t('pricing.title1')} <span className="text-brand-pink">{t('pricing.title2')}</span>
           </h1>
           <p className="text-xl text-white/60 max-w-2xl mx-auto">
