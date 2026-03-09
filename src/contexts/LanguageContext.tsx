@@ -133,9 +133,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'portfolio.servicesList.6.title': 'Другое',
     
     // Pricing
-    'pricing.title1': 'Прозрачные',
-    'pricing.title2': 'цены',
-    'pricing.desc': 'Выберите подходящий формат сотрудничества. Без скрытых платежей и сюрпризов.',
+    'pricing.title1': 'Инвестиции в',
+    'pricing.title2': 'результат',
+    'pricing.desc': 'Прозрачное ценообразование. Вы платите за премиальное качество, соблюдение сроков и внимание к деталям.',
     'pricing.landing': 'Лендинг',
     'pricing.landing.price': 'от ₽10000',
     'pricing.landing.desc': 'Идеально для запуска продукта, мероприятия или сбора лидов.',
@@ -163,6 +163,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'pricing.front.f5': 'Рефакторинг старого кода',
     'pricing.popular': 'Популярный выбор',
     'pricing.order': 'Заказать',
+    'pricing.choose': 'Выбрать тариф',
     
     // About
     'about.title1': 'Давайте',
@@ -311,9 +312,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'portfolio.servicesList.6.title': 'Other',
     
     // Pricing
-    'pricing.title1': 'Transparent',
-    'pricing.title2': 'Pricing',
-    'pricing.desc': 'Choose a suitable format of cooperation. No hidden fees or surprises.',
+    'pricing.title1': 'Investments in',
+    'pricing.title2': 'results',
+    'pricing.desc': 'Transparent pricing. You pay for premium quality, meeting deadlines, and attention to detail.',
     'pricing.landing': 'Landing Page',
     'pricing.landing.price': 'from $100',
     'pricing.landing.desc': 'Perfect for product launches, events, or lead generation.',
@@ -341,6 +342,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'pricing.front.f5': 'Legacy code refactoring',
     'pricing.popular': 'Popular Choice',
     'pricing.order': 'Order',
+    'pricing.choose': 'Choose tariff',
     
     // About
     'about.title1': 'Let\'s get',

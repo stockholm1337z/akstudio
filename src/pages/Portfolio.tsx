@@ -4,6 +4,35 @@ import React, { useRef, useState } from "react";
 import { DNASpiral } from "../components/DNASpiral";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const staggerContainerDelayed = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 1.5 }
+  }
+};
+
+const staggerContainerMoreDelayed = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 2.5 }
+  }
+};
+
 export function Portfolio() {
   const { t } = useLanguage();
   const projects = [
@@ -155,7 +184,26 @@ export function Portfolio() {
       {/* 2. Big vertical card for scenes */}
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8">
         {/* The Card Outline */}
-        <div className="w-full border border-brand-pink/50 rounded-[2.5rem] md:rounded-[4rem] relative flex flex-col overflow-hidden">
+        <div className="w-full relative flex flex-col">
+          
+          {/* Animated Neon Border */}
+          <motion.div 
+            className="absolute inset-0 border-2 border-brand-pink/50 rounded-[2.5rem] md:rounded-[4rem] pointer-events-none z-50"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0 0)" }}
+            transition={{ duration: 2, ease: "easeInOut" }}
+          />
+
+          {/* Neon Bulb Glow effect traveling down */}
+          <motion.div
+            className="absolute left-0 right-0 h-2 bg-brand-pink shadow-[0_0_30px_10px_rgba(247,6,112,0.8)] z-50 pointer-events-none rounded-full"
+            initial={{ top: "0%", opacity: 1 }}
+            animate={{ top: "100%", opacity: 0 }}
+            transition={{ duration: 2, ease: "easeInOut" }}
+          />
+
+          {/* Card Content Wrapper */}
+          <div className="w-full rounded-[2.5rem] md:rounded-[4rem] relative flex flex-col overflow-hidden">
           
           {/* Continuous Card Background (Flows through all scenes) */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -174,42 +222,58 @@ export function Portfolio() {
               <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mt-12 relative">
                 
                 {/* Background Text behind cards */}
-                <div className="absolute right-[-5%] top-[-5%] -z-10 flex flex-col items-end pointer-events-none select-none">
+                <motion.div 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={staggerContainerDelayed}
+                  className="absolute right-[-5%] top-[-5%] -z-10 flex flex-col items-end pointer-events-none select-none"
+                >
                   {/* Deep pink glow behind the text */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-brand-pink/20 blur-[120px] rounded-full z-[-1]"></div>
+                  <motion.div variants={fadeUp} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-brand-pink/20 blur-[120px] rounded-full z-[-1]"></motion.div>
                   
                   {/* Solid, softly blurred text integrated into background */}
                   <div className="flex flex-col items-end">
-                    <div className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-20 blur-[6px]">AKSTUDIO</div>
-                    <div className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-40 blur-[3px]">AKSTUDIO</div>
-                    <div className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-20 blur-[6px] scale-y-[-1]">AKSTUDIO</div>
+                    <motion.div variants={fadeUp} className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-20 blur-[6px]">AKSTUDIO</motion.div>
+                    <motion.div variants={fadeUp} className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-40 blur-[3px]">AKSTUDIO</motion.div>
+                    <motion.div variants={fadeUp} className="text-[6rem] md:text-[9rem] xl:text-[7rem] font-display font-black leading-[0.75] text-brand-pink opacity-20 blur-[6px] scale-y-[-1]">AKSTUDIO</motion.div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Left: Title & Button */}
-                <div className="flex flex-col items-start">
-                  <h2 className="text-6xl md:text-8xl lg:text-[9rem] font-display font-black leading-[0.85] tracking-tighter">
+                <motion.div 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={staggerContainerDelayed}
+                  className="flex flex-col items-start"
+                >
+                  <motion.h2 variants={fadeUp} className="text-6xl md:text-8xl lg:text-[9rem] font-display font-black leading-[0.85] tracking-tighter">
                     <span className="block text-white">Design</span>
                     <span className="block text-brand-pink">AK</span>
                     <span className="block text-white">STUDIO</span>
-                  </h2>
+                  </motion.h2>
                   
-                  <p className="mt-8 text-white/60 max-w-xs text-sm md:text-base">
+                  <motion.p variants={fadeUp} className="mt-8 text-white/60 max-w-xs text-sm md:text-base">
                     {t('portfolio.hero.desc')}
-                  </p>
+                  </motion.p>
                   
-                  <button className="mt-8 bg-brand-pink text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-black transition-colors duration-300 flex items-center gap-2 uppercase tracking-wider text-sm">
+                  <motion.button variants={fadeUp} className="mt-8 bg-brand-pink text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-black transition-colors duration-300 flex items-center gap-2 uppercase tracking-wider text-sm">
                     {t('portfolio.consultation')}
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
 
                 {/* Right: Info Cards */}
-                <div className="flex flex-col sm:flex-row gap-6 lg:mt-12">
+                <motion.div 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={staggerContainerDelayed}
+                  className="flex flex-col sm:flex-row gap-6 lg:mt-12"
+                >
                   {/* White Card */}
                   <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
+                    variants={fadeUp}
                     className="bg-white text-black p-8 rounded-[2rem] w-full sm:w-[240px] flex flex-col justify-between aspect-square shadow-2xl"
                   >
                     <div>
@@ -223,9 +287,7 @@ export function Portfolio() {
 
                   {/* Liquid Glass Card */}
                   <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    variants={fadeUp}
                     className="relative w-full sm:w-[240px] lg:translate-y-12"
                   >
                     {/* Matte blur underlay */}
@@ -244,22 +306,28 @@ export function Portfolio() {
                       </div>
                     </div>
                   </motion.div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Bottom Section: Big Text */}
-              <div className="pt-32 pb-12 flex justify-end">
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={staggerContainerMoreDelayed}
+                className="pt-32 pb-12 flex justify-end"
+              >
                 <div className="max-w-4xl text-right">
-                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
+                  <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
                     <span className="block text-white">{t('portfolio.transform.title1')}</span>
                     <span className="block text-brand-pink">{t('portfolio.transform.title2')}</span>
                     <span className="block text-white">{t('portfolio.transform.title3')}</span>
-                  </h2>
-                  <p className="mt-6 text-white/60 max-w-sm ml-auto text-sm md:text-base text-right">
+                  </motion.h2>
+                  <motion.p variants={fadeUp} className="mt-6 text-white/60 max-w-sm ml-auto text-sm md:text-base text-right">
                     {t('portfolio.transform.desc')}
-                  </p>
+                  </motion.p>
                 </div>
-              </div>
+              </motion.div>
 
             </div>
           </div>
@@ -267,59 +335,71 @@ export function Portfolio() {
           {/* SCENE 2: Services & Impact */}
           <div className="relative w-full flex flex-col p-8 md:p-16 lg:p-24 pt-0">
             {/* Top Section: "we are next-gen..." */}
-            <div className="flex flex-col items-center text-center mb-16">
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-12">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="flex flex-col items-center text-center mb-16"
+            >
+              <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-12">
                 <span className="text-white">{t('portfolio.nextgen.title1')} </span>
                 <span className="text-brand-pink">{t('portfolio.nextgen.title2')}</span>
                 <br />
                 <span className="text-white">{t('portfolio.nextgen.title3')}</span>
-              </h2>
+              </motion.h2>
 
               {/* Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                 {/* Card 1 */}
-                <div className="bg-white text-black p-8 rounded-3xl lg:rounded-l-[4rem] lg:rounded-r-2xl flex flex-col items-start text-left h-[280px]">
+                <motion.div variants={fadeUp} className="bg-white text-black p-8 rounded-3xl lg:rounded-l-[4rem] lg:rounded-r-2xl flex flex-col items-start text-left h-[280px]">
                   <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.uiux.title')}</h3>
                   <p className="text-black/60 text-sm">{t('portfolio.services.uiux.desc')}</p>
-                </div>
+                </motion.div>
                 {/* Card 2 (Pink) */}
-                <div className="bg-brand-pink text-white p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px] relative overflow-hidden">
+                <motion.div variants={fadeUp} className="bg-brand-pink text-white p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px] relative overflow-hidden">
                   <h3 className="text-2xl font-bold mb-4 leading-tight relative z-10 whitespace-pre-line">{t('portfolio.services.brand.title')}</h3>
                   <p className="text-white/80 text-sm relative z-10">{t('portfolio.services.brand.desc')}</p>
-                </div>
+                </motion.div>
                 {/* Card 3 */}
-                <div className="bg-white text-black p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px]">
+                <motion.div variants={fadeUp} className="bg-white text-black p-8 rounded-3xl lg:rounded-2xl flex flex-col items-start text-left h-[280px]">
                   <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.web.title')}</h3>
                   <p className="text-black/60 text-sm">{t('portfolio.services.web.desc')}</p>
-                </div>
+                </motion.div>
                 {/* Card 4 */}
-                <div className="bg-white text-black p-8 rounded-3xl lg:rounded-r-[4rem] lg:rounded-l-2xl flex flex-col items-start text-left h-[280px]">
+                <motion.div variants={fadeUp} className="bg-white text-black p-8 rounded-3xl lg:rounded-r-[4rem] lg:rounded-l-2xl flex flex-col items-start text-left h-[280px]">
                   <h3 className="text-2xl font-bold mb-4 leading-tight whitespace-pre-line">{t('portfolio.services.motion.title')}</h3>
                   <p className="text-black/60 text-sm">{t('portfolio.services.motion.desc')}</p>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Bottom Section: "data that proves our impact" */}
-            <div className="flex flex-col lg:flex-row items-start justify-between gap-16 mt-24">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="flex flex-col lg:flex-row items-start justify-between gap-16 mt-24"
+            >
               {/* Left: Text & Tags */}
               <div className="flex-1 max-w-xl">
-                <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-10">
+                <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-10">
                   <span className="block text-white">{t('portfolio.data.title1')}</span>
                   <span className="block text-white">{t('portfolio.data.title2')}</span>
                   <span className="block text-brand-pink">{t('portfolio.data.title3')}</span>
-                </h2>
+                </motion.h2>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
                   <div className="border border-white/20 rounded-full py-3 px-6 text-center text-xs font-bold tracking-wider uppercase text-white/60 hover:text-white hover:border-white/40 transition-colors cursor-pointer">UI/UX Design</div>
                   <div className="border border-white/20 rounded-full py-3 px-6 text-center text-xs font-bold tracking-wider uppercase text-white/60 hover:text-white hover:border-white/40 transition-colors cursor-pointer">Brand Identity</div>
                   <div className="bg-brand-pink rounded-full py-3 px-6 text-center text-xs font-bold tracking-wider uppercase text-white cursor-pointer">Web Dev</div>
                   <div className="border border-white/20 rounded-full py-3 px-6 text-center text-xs font-bold tracking-wider uppercase text-white/60 hover:text-white hover:border-white/40 transition-colors cursor-pointer">Motion Graphics</div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Right: Scrolling Cards */}
-              <div className="flex-1 w-full overflow-hidden relative">
+              <motion.div variants={fadeUp} className="flex-1 w-full overflow-hidden relative">
                 <div 
                   ref={scrollContainerRef}
                   onScroll={handleScroll}
@@ -413,8 +493,8 @@ export function Portfolio() {
                     style={{ transform: `translateX(${scrollProgress * 200}%)` }}
                   ></div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
           
           {/* SCENE 3: Who our services are for */}
@@ -428,27 +508,39 @@ export function Portfolio() {
             </div>
 
             {/* Header */}
-            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between mb-20 gap-8">
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between mb-20 gap-8"
+            >
+              <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
                 <span className="block text-white">{t('portfolio.who.title1')}</span>
                 <span className="block text-white">{t('portfolio.who.title2')}</span>
-              </h2>
-              <h3 className="text-2xl md:text-3xl font-bold text-white/80 max-w-sm leading-tight mb-2 whitespace-pre-line">
+              </motion.h2>
+              <motion.h3 variants={fadeUp} className="text-2xl md:text-3xl font-bold text-white/80 max-w-sm leading-tight mb-2 whitespace-pre-line">
                 {t('portfolio.who.subtitle')}
-              </h3>
-            </div>
+              </motion.h3>
+            </motion.div>
 
             {/* Cards Zig-Zag Layout */}
             <div className="relative z-10 w-full max-w-6xl mx-auto">
               
               {/* Desktop Grid Layout */}
-              <div className="hidden md:grid grid-cols-12 gap-x-6 gap-y-8 relative">
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={staggerContainer}
+                className="hidden md:grid grid-cols-12 gap-x-6 gap-y-8 relative"
+              >
                 {/* Row 1 */}
-                <div className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
+                <motion.div variants={fadeUp} className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">01</div>
                   <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card1')}</div>
-                </div>
-                <div className="col-start-7 col-span-5 rounded-[2.5rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl z-10 relative">
+                </motion.div>
+                <motion.div variants={fadeUp} className="col-start-7 col-span-5 rounded-[2.5rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl z-10 relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-pink via-[#ff0055] to-[#cc0044] z-0"></div>
                   <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/20 blur-2xl rounded-full z-0"></div>
                   <div className="absolute bottom-0 right-0 w-60 h-60 bg-black/20 blur-3xl rounded-full z-0"></div>
@@ -459,40 +551,46 @@ export function Portfolio() {
                     </div>
                   </div>
                   <div className="relative z-10 text-white font-bold text-xl leading-tight mt-auto whitespace-pre-line">{t('portfolio.who.card2.title')}</div>
-                </div>
+                </motion.div>
 
                 {/* Row 2 */}
-                <div className="col-start-2 col-span-3 aspect-square rounded-[2.5rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl z-10 relative">
+                <motion.div variants={fadeUp} className="col-start-2 col-span-3 aspect-square rounded-[2.5rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl z-10 relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#ff0055] to-brand-pink z-0"></div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-black/10 blur-2xl rounded-full z-0"></div>
                   <div className="relative z-10 text-white text-5xl font-display font-medium">03</div>
                   <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card3')}</div>
-                </div>
-                <div className="col-start-6 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
+                </motion.div>
+                <motion.div variants={fadeUp} className="col-start-6 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">04</div>
                   <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card4')}</div>
-                </div>
+                </motion.div>
 
                 {/* Row 3 */}
-                <div className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
+                <motion.div variants={fadeUp} className="col-start-4 col-span-3 aspect-square bg-white rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">05</div>
                   <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card5')}</div>
-                </div>
-                <div className="col-start-8 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
+                </motion.div>
+                <motion.div variants={fadeUp} className="col-start-8 col-span-3 aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10">
                   <div className="text-brand-pink text-5xl font-display font-medium">06</div>
                   <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card6')}</div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* Mobile Layout */}
-              <div className="flex flex-col gap-6 md:hidden">
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={staggerContainer}
+                className="flex flex-col gap-6 md:hidden"
+              >
                 {/* Card 1 */}
-                <div className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
+                <motion.div variants={fadeUp} className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">01</div>
                   <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card1')}</div>
-                </div>
+                </motion.div>
                 {/* Card 2 */}
-                <div className="w-full rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative min-h-[250px]">
+                <motion.div variants={fadeUp} className="w-full rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative min-h-[250px]">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-pink via-[#ff0055] to-[#cc0044] z-0"></div>
                   <div className="relative z-10 flex justify-between items-start mb-8">
                     <div className="text-white text-5xl font-display font-medium">02</div>
@@ -501,29 +599,29 @@ export function Portfolio() {
                       {t('portfolio.who.card2.desc')}
                   </div>
                   <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card2.title')}</div>
-                </div>
+                </motion.div>
                 {/* Card 3 */}
-                <div className="w-full aspect-square rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative">
+                <motion.div variants={fadeUp} className="w-full aspect-square rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#ff0055] to-brand-pink z-0"></div>
                   <div className="relative z-10 text-white text-5xl font-display font-medium">03</div>
                   <div className="relative z-10 text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card3')}</div>
-                </div>
+                </motion.div>
                 {/* Card 4 */}
-                <div className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
+                <motion.div variants={fadeUp} className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">04</div>
                   <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card4')}</div>
-                </div>
+                </motion.div>
                 {/* Card 5 */}
-                <div className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
+                <motion.div variants={fadeUp} className="w-full aspect-square bg-white rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">05</div>
                   <div className="text-black font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card5')}</div>
-                </div>
+                </motion.div>
                 {/* Card 6 */}
-                <div className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
+                <motion.div variants={fadeUp} className="w-full aspect-square bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl">
                   <div className="text-brand-pink text-5xl font-display font-medium">06</div>
                   <div className="text-white font-bold text-xl leading-tight whitespace-pre-line">{t('portfolio.who.card6')}</div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
             </div>
           </div>
@@ -537,15 +635,21 @@ export function Portfolio() {
             </div>
 
             {/* Header */}
-            <div className="relative z-10 flex flex-col items-center justify-center mb-10 text-center">
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="relative z-10 flex flex-col items-center justify-center mb-10 text-center"
+            >
+              <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
                 <span className="block text-white">{t('portfolio.work.title1')}</span>
                 <span className="block">
                   <span className="text-brand-pink">{t('portfolio.work.title2')} </span>
                   <span className="text-white">{t('portfolio.work.title3')}</span>
                 </span>
-              </h2>
-            </div>
+              </motion.h2>
+            </motion.div>
 
             {/* 3D Carousel */}
             <div className="relative z-10 h-[600px] md:h-[700px] w-full flex items-center justify-center mt-10" style={{ perspective: "1200px" }}>
@@ -640,8 +744,14 @@ export function Portfolio() {
             </div>
 
             {/* Header: Title and Button */}
-            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16 w-full">
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16 w-full"
+            >
+              <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter">
                 <span className="block">
                   <span className="text-white">{t('portfolio.creatives.title1')} </span>
                   <span className="text-brand-pink">{t('portfolio.creatives.title2')}</span>
@@ -650,15 +760,21 @@ export function Portfolio() {
                   <span className="text-brand-pink">{t('portfolio.creatives.title3')} </span>
                   <span className="text-white">{t('portfolio.creatives.title4')}</span>
                 </span>
-              </h2>
+              </motion.h2>
               
-              <button className="bg-white text-black font-bold py-4 px-10 rounded-full hover:bg-brand-pink hover:text-white transition-colors duration-300 uppercase tracking-wider text-sm shadow-xl shrink-0">
+              <motion.button variants={fadeUp} className="bg-white text-black font-bold py-4 px-10 rounded-full hover:bg-brand-pink hover:text-white transition-colors duration-300 uppercase tracking-wider text-sm shadow-xl shrink-0">
                 {t('portfolio.consultation')}
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* Video Container */}
-            <div className="relative z-10 w-full max-w-[1200px] mx-auto mt-16 md:mt-24 flex justify-center mix-blend-screen">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="relative z-10 w-full max-w-[1200px] mx-auto mt-16 md:mt-24 flex justify-center mix-blend-screen"
+            >
               <video 
                 src="/mockups.webm" 
                 autoPlay 
@@ -667,15 +783,21 @@ export function Portfolio() {
                 playsInline
                 className="w-full h-auto object-contain transform scale-110 md:scale-125"
               />
-            </div>
+            </motion.div>
             
           </div>
           {/* Scene 6: Services / The Team Behind Your Success Style */}
-          <div className="py-24 md:py-32 flex items-center justify-center relative z-10 px-4 md:px-12">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="py-24 md:py-32 flex items-center justify-center relative z-10 px-4 md:px-12"
+          >
             <div className="w-full max-w-[1200px] mx-auto bg-[#0a0a0a] rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 border border-white/5 shadow-2xl overflow-hidden relative">
               
               {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
                   <h2 className="text-5xl md:text-7xl font-display font-bold leading-[0.9] tracking-tight">
                     <span className="text-white block">{t('portfolio.services1')}</span>
@@ -700,10 +822,11 @@ export function Portfolio() {
                     <ChevronRight size={24} strokeWidth={2.5} />
                   </button>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Scrollable Cards Container */}
-              <div 
+              <motion.div 
+                variants={fadeUp}
                 ref={servicesScrollRef}
                 className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -732,7 +855,7 @@ export function Portfolio() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Pagination Dots (Visual only) */}
               <div className="flex justify-center gap-2 mt-4">
@@ -742,12 +865,18 @@ export function Portfolio() {
                 <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
               </div>
             </div>
-          </div>
+          </motion.div>
           {/* Scene 7: DNA Spiral & Start a Project */}
-          <div className="relative w-full h-[80vh] flex items-center justify-center -mt-48 pt-48 z-0">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="relative w-full h-[80vh] flex items-center justify-center -mt-48 pt-48 z-0"
+          >
             <DNASpiral />
             
-            <div className="relative z-10 text-center px-4">
+            <motion.div variants={fadeUp} className="relative z-10 text-center px-4">
               <a 
                 href="#contact" 
                 className="group inline-block"
@@ -757,9 +886,10 @@ export function Portfolio() {
                 </h2>
                 <div className="h-1 w-0 bg-gradient-to-r from-[#F70670] to-[#8B5CF6] mx-auto transition-all duration-500 group-hover:w-full mt-4"></div>
               </a>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
+        </div>
         </div>
       </div>
     </div>
