@@ -7,20 +7,20 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 // ─── Variants ─────────────────────────────────────────────────────────────────
 const fadeUp = {
-  hidden: { opacity: 0, y: 44 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 1, y: 0 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0 } },
 };
 const stagger = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.11 } },
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { duration: 0, staggerChildren: 0 } },
 };
 const staggerD1 = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.11, delayChildren: 0.5 } },
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { duration: 0, staggerChildren: 0, delayChildren: 0 } },
 };
 const staggerD2 = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.11, delayChildren: 0.9 } },
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { duration: 0, staggerChildren: 0, delayChildren: 0 } },
 };
 
 // ─── Canvas Aurora Background ─────────────────────────────────────────────────
@@ -161,71 +161,6 @@ const Tag = memo(({ n, label }: { n: string; label: string }) => (
     <span className="text-[9px] font-bold text-[#F70670]/50">/{n}</span>
   </div>
 ));
-
-// ─── Cinematic border ─────────────────────────────────────────────────────────
-const CinematicBorder = ({ onComplete }: { onComplete: () => void }) => {
-  useEffect(() => {
-    let cancelled = false;
-    const timer = window.setTimeout(() => {
-      if (!cancelled) onComplete();
-    }, 1350);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [onComplete]);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden rounded-[2.5rem] md:rounded-[4rem]">
-      <motion.div
-        className="absolute inset-0 rounded-[2.5rem] md:rounded-[4rem]"
-        initial={{ opacity: 0, scale: 0.988 }}
-        animate={{ opacity: [0, 0.55, 0.14], scale: [0.988, 1, 1] }}
-        transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1], times: [0, 0.5, 1] }}
-        style={{
-          background: "radial-gradient(circle at 50% 22%, rgba(255,255,255,0.08) 0%, rgba(247,6,112,0.08) 24%, rgba(0,0,0,0) 62%)",
-        }}
-      />
-
-      <motion.div
-        className="absolute inset-0 rounded-[2.5rem] md:rounded-[4rem] border border-[#F70670]/80"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.95, 0.45] }}
-        transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1], times: [0, 0.55, 1] }}
-        style={{
-          boxShadow: "0 0 24px rgba(247,6,112,0.22), inset 0 0 18px rgba(247,6,112,0.06)",
-        }}
-      />
-
-      <motion.div
-        className="absolute -top-[15%] -bottom-[15%] w-[42%]"
-        initial={{ x: "-120%", opacity: 0 }}
-        animate={{ x: ["-120%", "240%"], opacity: [0, 0.9, 0.45, 0] }}
-        transition={{ duration: 1.15, delay: 0.1, ease: [0.16, 1, 0.3, 1], times: [0, 0.18, 0.65, 1] }}
-        style={{
-          left: "-8%",
-          rotate: "14deg",
-          background:
-            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 18%, rgba(255,255,255,0.88) 50%, rgba(247,6,112,0.45) 62%, rgba(255,255,255,0) 100%)",
-          filter: "blur(20px)",
-          mixBlendMode: "screen",
-        }}
-      />
-
-      <motion.div
-        className="absolute -top-[6%] h-[36%] left-[6%] right-[6%] rounded-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.3, 0] }}
-        transition={{ duration: 0.9, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          background: "radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(247,6,112,0.1) 35%, rgba(0,0,0,0) 74%)",
-          filter: "blur(22px)",
-        }}
-      />
-    </div>
-  );
-};
 
 // ─── Project Card ─────────────────────────────────────────────────────────────
 const ProjectCard = memo(({ p, i, activeIndex, onClick }: any) => {
@@ -630,9 +565,32 @@ const Scene7 = memo(({ label }: { label: string }) => {
 });
 
 export function Portfolio() {
-  const [introComplete, setIntroComplete] = useState(false);
+  const [cardHeight, setCardHeight] = useState(0);
+  const [compactHeight, setCompactHeight] = useState(0);
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const cardContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = cardContentRef.current;
+    if (!node) return;
+
+    const update = () => {
+      setCardHeight(node.scrollHeight);
+      setCompactHeight(Math.max(460, Math.min(window.innerHeight - 220, 720)));
+    };
+    update();
+
+    const observer = new ResizeObserver(() => update());
+    observer.observe(node);
+    window.addEventListener("resize", update);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   const projects = useMemo(() => [
     { title: t("portfolio.projects.1.title"), desc: t("portfolio.projects.1.desc"), img: "/landing1.jpg" },
@@ -675,92 +633,114 @@ export function Portfolio() {
       {/* ╔═══════════════════════════════════════════════════════╗
           ║              THE BIG VERTICAL CARD                   ║
           ╚═══════════════════════════════════════════════════════╝ */}
-      <div className="relative w-full max-w-[1440px] mx-auto px-4 md:px-8 z-10">
-        <div className="w-full relative">
-
-          <CinematicBorder onComplete={() => setIntroComplete(true)} />
-
-          <motion.div
-            className={`w-full rounded-[2.5rem] md:rounded-[4rem] relative flex flex-col overflow-hidden ${!introComplete ? "pointer-events-none" : ""}`}
+      <div className="relative w-full max-w-[1440px] mx-auto px-4 md:px-8 z-10 flex justify-center">
+        <motion.div
+          ref={cardRef}
+          className="w-full rounded-[2.5rem] md:rounded-[4rem] relative flex flex-col"
+          style={{
+            backdropFilter: "blur(0px)",
+            boxShadow:
+              "inset 0 0 0 1px rgba(247,6,112,0.16), 0 0 24px rgba(247,6,112,0.16), 0 0 58px rgba(139,92,246,0.08)",
+            transformOrigin: "top center",
+            willChange: "width, height, transform, background-color",
+          }}
+          initial={{ 
+            width: "18%", 
+            height: compactHeight ? compactHeight * 0.18 : 120, 
+            y: -40,
+            opacity: 1,
+            backgroundColor: "rgba(247,6,112,0.05)"
+          }}
+          animate={{ 
+            width: "100%", 
+            height: cardHeight || "auto", 
+            y: 0,
+            opacity: 1,
+            backgroundColor: "rgba(4,3,5,0.88)"
+          }}
+          transition={{
+            duration: 1.6,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <div 
+            className="relative w-full h-full rounded-[inherit] overflow-hidden"
             style={{
-              // Card has a very subtle translucent surface — the aurora bleeds through slightly
-              background: "rgba(4,3,5,0.88)",
-              backdropFilter: "blur(0px)",
-              // No border here — the cinematic border IS the border
+              WebkitMaskImage: "-webkit-radial-gradient(white, black)",
+              maskImage: "radial-gradient(white, black)"
             }}
-            initial={{ opacity: 0, scale: 0.986 }}
-            animate={{ opacity: introComplete ? 1 : 0, scale: introComplete ? 1 : 0.986 }}
-            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* ── Hero people.png — screen blend removes black ── */}
-            <div className="absolute inset-0 pointer-events-none z-20">
-              <div
-                className="absolute inset-0 opacity-90"
-                style={{
-                  background: [
-                    "radial-gradient(circle at 12% 12%, rgba(247,6,112,0.16), transparent 28%)",
-                    "radial-gradient(circle at 84% 18%, rgba(139,92,246,0.14), transparent 24%)",
-                    "radial-gradient(circle at 50% 46%, rgba(255,255,255,0.035), transparent 38%)",
-                    "radial-gradient(circle at 50% 100%, rgba(247,6,112,0.08), transparent 30%)",
-                  ].join(", "),
-                }}
-              />
-              <div
-                className="absolute inset-0 opacity-[0.055]"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(180deg, rgba(255,255,255,0.55) 0px, rgba(255,255,255,0.55) 1px, transparent 1px, transparent 3px)",
-                  mixBlendMode: "overlay",
-                }}
-              />
-              <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-white/[0.055] to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#020203]/72 via-[#020203]/26 to-transparent" />
-            </div>
-
-            <div 
-              className="absolute top-0 left-0 right-0 h-[100vh] pointer-events-none overflow-hidden z-[0]"
-              style={{
-                maskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 100%)"
-              }}
+            <motion.div 
+              ref={cardContentRef}
+              className="relative flex flex-col w-[calc(100vw-2rem)] md:w-[calc(100vw-4rem)] max-w-[1376px]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
             >
-              <img
-                src="/people.png" alt=""
-                className="absolute inset-0 w-full h-full object-cover object-top scale-[1.1]"
-                style={{ mixBlendMode: "screen", opacity: 0.12, filter: "saturate(0.8) contrast(1.05)" }}
-              />
-            </div>
+              {/* ── Hero people.png — screen blend removes black ── */}
+              <div className="absolute inset-0 pointer-events-none z-20">
+                <div
+                  className="absolute inset-0 opacity-90"
+                  style={{
+                    background: [
+                      "radial-gradient(circle at 12% 12%, rgba(247,6,112,0.16), transparent 28%)",
+                      "radial-gradient(circle at 84% 18%, rgba(139,92,246,0.14), transparent 24%)",
+                      "radial-gradient(circle at 50% 46%, rgba(255,255,255,0.035), transparent 38%)",
+                      "radial-gradient(circle at 50% 100%, rgba(247,6,112,0.08), transparent 30%)",
+                    ].join(", "),
+                  }}
+                />
+                <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-white/[0.055] to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#020203]/72 via-[#020203]/26 to-transparent" />
+              </div>
 
-            {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                SCENE 1 — HERO
-            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-            <div className={`relative w-full flex flex-col ${SP} pt-10 pb-0 min-h-screen`}>
+              <div 
+                className="absolute top-0 left-0 right-0 h-[100vh] pointer-events-none overflow-hidden z-[0]"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 100%)"
+                }}
+              >
+                <img
+                  src="/people.png" alt=""
+                  className="absolute inset-0 w-full h-full object-cover object-top scale-[1.1]"
+                  style={{ mixBlendMode: "screen", opacity: 0.12, filter: "saturate(0.8) contrast(1.05)" }}
+                />
+              </div>
+
+              {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                  SCENE 1 — HERO
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+              <div className={`relative w-full flex flex-col ${SP} pt-10 pb-0 min-h-screen`}>
               <Tag n="01" label="Intro" />
 
               <div className="relative z-20 flex-1 flex flex-col">
-                <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mt-16">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-14 lg:gap-24 mt-14 md:mt-16">
 
                   {/* Left: Title */}
                   <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-120px" }}
-                    variants={staggerD1} className="flex flex-col items-start">
+                    variants={staggerD1} className="flex flex-col items-start flex-1 max-w-[760px]">
                     <motion.div variants={fadeUp} className="flex items-center gap-3 mb-8">
                       <div className="w-5 h-[1px] bg-[#F70670]" />
                       <span className="text-[10px] font-bold tracking-[0.45em] uppercase text-white/30">Design Studio</span>
                     </motion.div>
 
                     <motion.h1 variants={fadeUp}
-                      className="text-6xl md:text-8xl lg:text-[9.5rem] font-display font-black leading-[1.05] md:leading-[0.82] tracking-tighter">
+                      className="text-[2.75rem] sm:text-6xl md:text-8xl lg:text-[8.35rem] xl:text-[8.9rem] font-display font-black leading-[0.96] md:leading-[0.82] tracking-tighter">
                       <span className="block text-white">Design</span>
-                      <span className="block" style={{ WebkitTextStroke: "2px #F70670", color: "transparent" }}>AK</span>
-                      <span className="block text-white">STUDIO</span>
+                      <span className="block mt-1 md:mt-3">
+                        <span style={{ WebkitTextStroke: "2px #F70670", color: "transparent" }}>AK</span>
+                      </span>
+                      <span className="block text-white -mt-1 md:-mt-2">STUDIO</span>
                     </motion.h1>
 
                     <motion.p variants={fadeUp}
-                      className="mt-10 text-white/35 max-w-xs text-sm md:text-base leading-relaxed">
+                      className="mt-12 text-white/35 max-w-sm text-sm md:text-base leading-relaxed">
                       {t("portfolio.hero.desc")}
                     </motion.p>
 
                     <motion.button variants={fadeUp} onClick={() => navigate("/pricing")}
-                      className="mt-10 group relative overflow-hidden bg-[#F70670] text-white font-bold py-4 px-10 rounded-full uppercase tracking-wider text-sm"
+                      className="mt-12 group relative overflow-hidden bg-[#F70670] text-white font-bold py-4 px-10 rounded-full uppercase tracking-wider text-sm"
                       whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                       <motion.span
                         className="absolute inset-0 bg-white"
@@ -777,18 +757,18 @@ export function Portfolio() {
 
                   {/* Right: Stat cards */}
                   <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-120px" }}
-                    variants={staggerD1} className="flex flex-col sm:flex-row gap-5 lg:mt-16">
+                    variants={staggerD1} className="w-full lg:w-auto lg:flex-none grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6 lg:mt-20">
                     {[
                       { title: t("portfolio.stats.budget.title"), desc: t("portfolio.stats.budget.desc"), dark: false },
                       { title: t("portfolio.stats.posts.title"),  desc: t("portfolio.stats.posts.desc"),  dark: true },
                     ].map((c, i) => (
                       <motion.div key={i} variants={fadeUp}
-                        className={`${c.dark ? "bg-[#111] border border-white/6" : "bg-white text-black"} p-8 rounded-[2rem] w-full sm:w-[220px] flex flex-col justify-between aspect-square shadow-2xl ${i === 1 ? "lg:translate-y-14" : ""}`}
+                        className={`${c.dark ? "bg-[#111] border border-white/6" : "bg-white text-black"} p-8 md:p-9 rounded-[2rem] w-full sm:w-[260px] md:w-[272px] min-h-[250px] md:min-h-[272px] flex flex-col justify-between shadow-2xl overflow-hidden ${i === 1 ? "lg:translate-y-10" : ""}`}
                         whileHover={{ y: -6, boxShadow: "0 24px 60px -10px rgba(247,6,112,0.22)" }}
                         transition={{ duration: 0.28 }}>
                         <div>
-                          <h3 className={`text-2xl md:text-3xl font-bold mb-2 leading-tight ${c.dark ? "text-white" : "text-black"}`}>{c.title}</h3>
-                          <p className={`text-xs leading-relaxed ${c.dark ? "text-white/35" : "text-black/45"}`}>{c.desc}</p>
+                          <h3 className={`text-[1.7rem] md:text-[2.05rem] font-bold mb-3 leading-[0.95] break-words max-w-[10ch] ${c.dark ? "text-white" : "text-black"}`}>{c.title}</h3>
+                          <p className={`text-xs md:text-[13px] leading-relaxed max-w-[22ch] ${c.dark ? "text-white/35" : "text-black/45"}`}>{c.desc}</p>
                         </div>
                         <div className="w-10 h-10 bg-[#F70670] rounded-full flex items-center justify-center text-white self-end">
                           <ArrowRight className="w-4 h-4" />
@@ -814,15 +794,15 @@ export function Portfolio() {
                   </div>
                 </motion.div>
               </div>
-            </div>
+              </div>
 
-            {/* Ticker between scenes — no divider line, just motion */}
-            <Marquee items={ticker} />
+              {/* Ticker between scenes — no divider line, just motion */}
+              <Marquee items={ticker} />
 
-            {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                SCENE 2 — SERVICES & IMPACT
-            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-            <div className={`relative w-full flex flex-col ${SP} pt-24 pb-0`}>
+              {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                  SCENE 2 — SERVICES & IMPACT
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+              <div className={`relative w-full flex flex-col ${SP} pt-24 pb-0`}>
               <Tag n="02" label="Services" />
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
@@ -1135,9 +1115,9 @@ export function Portfolio() {
               <Scene7 label={t("portfolio.startProject")} />
             </div>
             </div>
-
           </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

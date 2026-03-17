@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Mail, MessageCircle, Send } from "lucide-react";
-import { MouseEvent, useEffect, useRef } from "react";
+import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocation } from "react-router-dom";
 
@@ -44,6 +44,72 @@ export function About() {
   }, [location.state]);
 
   const defaultProjectInfo = location.state?.projectInfo || "";
+  const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+  const [formData, setFormData] = useState({
+    name: "",
+    contact: "",
+    project: defaultProjectInfo,
+  });
+  const [submitState, setSubmitState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  useEffect(() => {
+    setFormData((current) => ({ ...current, project: defaultProjectInfo }));
+  }, [defaultProjectInfo]);
+
+  const handleChange = (field: "name" | "contact" | "project", value: string) => {
+    setFormData((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!accessKey) {
+      setSubmitState("error");
+      setSubmitMessage("Web3Forms access key is missing. Add VITE_WEB3FORMS_ACCESS_KEY to your .env file.");
+      return;
+    }
+
+    setSubmitState("loading");
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: "New request from the About page",
+          from_name: "AK Studio Website",
+          name: formData.name,
+          email: formData.contact.includes("@") ? formData.contact : "",
+          contact: formData.contact,
+          message: formData.project,
+          source: "About page",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to send the form.");
+      }
+
+      setSubmitState("success");
+      setSubmitMessage("The form has been sent successfully.");
+      setFormData({
+        name: "",
+        contact: "",
+        project: "",
+      });
+    } catch (error) {
+      setSubmitState("error");
+      setSubmitMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-16 px-6 relative z-10 overflow-hidden">
@@ -144,44 +210,64 @@ export function About() {
         >
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
             <div className="lg:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">Оставить заявку</h3>
-              <p className="text-white/50 text-lg">Расскажите вкратце о вашей задаче, и я свяжусь с вами в течение дня для обсуждения деталей.</p>
+              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('about.form.title')}</h3>
+              <p className="text-white/50 text-lg">{t('about.form.desc')}</p>
             </div>
             
             <div className="lg:col-span-3">
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-white/50 mb-2">Ваше имя</label>
+                    <label className="block text-sm font-medium text-white/50 mb-2">{t('about.form.nameLabel')}</label>
                     <input 
+                      name="name"
                       type="text" 
+                      value={formData.name}
+                      onChange={(e) => handleChange("name", e.target.value)}
+                      required
                       className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder="обладатель сайта уровня awwwards"
+                      placeholder={t('about.form.namePlaceholder')}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/50 mb-2">Email или Telegram</label>
+                    <label className="block text-sm font-medium text-white/50 mb-2">{t('about.form.contactLabel')}</label>
                     <input 
+                      name="contact"
                       type="text" 
+                      value={formData.contact}
+                      onChange={(e) => handleChange("contact", e.target.value)}
+                      required
                       className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder="@username или email@domain.com"
+                      placeholder={t('about.form.contactPlaceholder')}
                     />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    <span className="bg-[#4A0024] text-white px-1.5 py-0.5 rounded-sm">О проекте</span>
+                    <span className="bg-[#4A0024] text-white px-1.5 py-0.5 rounded-sm">{t('about.form.projectLabel')}</span>
                   </label>
                   <textarea 
+                    name="project"
                     rows={4}
-                    defaultValue={defaultProjectInfo}
+                    value={formData.project}
+                    onChange={(e) => handleChange("project", e.target.value)}
+                    required
                     className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors resize-none"
-                    placeholder="Какая задача стоит перед вами?"
+                    placeholder={t('about.form.projectPlaceholder')}
                   />
                 </div>
+                {submitMessage && (
+                  <p className={`text-sm ${submitState === "success" ? "text-emerald-400" : "text-rose-400"}`}>
+                    {submitMessage}
+                  </p>
+                )}
                 <div className="flex justify-end">
-                  <button className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-brand-pink text-white font-bold py-4 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.3)]">
-                    Отправить <Send className="w-5 h-5" />
+                  <button
+                    type="submit"
+                    disabled={submitState === "loading"}
+                    className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-brand-pink text-white font-bold py-4 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {submitState === "loading" ? "Sending..." : t('about.form.submit')} <Send className="w-5 h-5" />
                   </button>
                 </div>
               </form>
