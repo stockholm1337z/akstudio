@@ -1,10 +1,14 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Mail, MessageCircle, Send } from "lucide-react";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocation } from "react-router-dom";
 
 export function About() {
   const { t } = useLanguage();
+  const location = useLocation();
+  const formRef = useRef<HTMLDivElement>(null);
+  
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -32,6 +36,14 @@ export function About() {
     x.set(0);
     y.set(0);
   };
+
+  useEffect(() => {
+    if (location.state?.projectInfo && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.state]);
+
+  const defaultProjectInfo = location.state?.projectInfo || "";
 
   return (
     <div className="min-h-screen pt-32 pb-16 px-6 relative z-10 overflow-hidden">
@@ -125,47 +137,51 @@ export function About() {
 
         {/* Bottom Section: Horizontal Contact Form */}
         <motion.div 
+          ref={formRef}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative bg-[#111111]/40 border border-white/10 p-8 md:p-12 rounded-[2rem] backdrop-blur-2xl w-full z-10 shadow-[0_30px_60px_rgba(0,0,0,0.5)] mt-16"
+          className="relative bg-[#0A0A0A] border border-white/5 p-8 md:p-12 rounded-[2rem] w-full z-10 shadow-2xl mt-16"
         >
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
             <div className="lg:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('about.form.title')}</h3>
-              <p className="text-white/50 text-lg">{t('about.form.desc')}</p>
+              <h3 className="text-3xl md:text-4xl font-display font-bold mb-4">Оставить заявку</h3>
+              <p className="text-white/50 text-lg">Расскажите вкратце о вашей задаче, и я свяжусь с вами в течение дня для обсуждения деталей.</p>
             </div>
             
             <div className="lg:col-span-3">
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.nameLabel')}</label>
+                    <label className="block text-sm font-medium text-white/50 mb-2">Ваше имя</label>
                     <input 
                       type="text" 
-                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder={t('about.form.namePlaceholder')}
+                      className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
+                      placeholder="обладатель сайта уровня awwwards"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.contactLabel')}</label>
+                    <label className="block text-sm font-medium text-white/50 mb-2">Email или Telegram</label>
                     <input 
                       type="text" 
-                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
-                      placeholder={t('about.form.contactPlaceholder')}
+                      className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors"
+                      placeholder="@username или email@domain.com"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">{t('about.form.projectLabel')}</label>
+                  <label className="block text-sm font-medium mb-2">
+                    <span className="bg-[#4A0024] text-white px-1.5 py-0.5 rounded-sm">О проекте</span>
+                  </label>
                   <textarea 
-                    rows={3}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors resize-none"
-                    placeholder={t('about.form.projectPlaceholder')}
+                    rows={4}
+                    defaultValue={defaultProjectInfo}
+                    className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-brand-pink transition-colors resize-none"
+                    placeholder="Какая задача стоит перед вами?"
                   />
                 </div>
                 <div className="flex justify-end">
                   <button className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-brand-pink text-white font-bold py-4 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-[0_0_20px_rgba(247,6,112,0.3)]">
-                    {t('about.form.submit')} <Send className="w-5 h-5" />
+                    Отправить <Send className="w-5 h-5" />
                   </button>
                 </div>
               </form>
