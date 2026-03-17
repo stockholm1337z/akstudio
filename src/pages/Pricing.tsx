@@ -276,7 +276,12 @@ export function Pricing() {
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">{t("pricing.config.title1")}</h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 leading-[0.95]">
+            <span className="block">{t("pricing.config.title1")}</span>
+            {t("pricing.config.title2") !== "pricing.config.title2" && (
+              <span className="block">{t("pricing.config.title2")}</span>
+            )}
+          </h1>
           <p className="text-lg text-white/60 max-w-2xl mx-auto">{t("pricing.config.desc")}</p>
         </motion.div>
 
