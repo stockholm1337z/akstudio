@@ -236,7 +236,7 @@ const ProjectCard = memo(({ p, i, activeIndex, onClick }: any) => {
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 w-[280px] md:w-[380px] h-[420px] md:h-[520px] rounded-[2rem] cursor-pointer bg-[#080808]"
+      className="absolute top-1/2 left-1/2 w-[280px] md:w-[380px] h-[480px] md:h-[520px] rounded-[2rem] cursor-pointer bg-[#080808]"
       style={{ transformStyle: "preserve-3d", pointerEvents: abs > 2 ? "none" : "auto" }}
       animate={{
         x: `calc(-50% + ${offset * 150}px)`,
@@ -287,7 +287,7 @@ const ProjectCard = memo(({ p, i, activeIndex, onClick }: any) => {
       </motion.div>
 
       <motion.div
-        className="absolute top-4 left-4 right-4 bottom-[44%] z-20 rounded-2xl overflow-hidden shadow-xl"
+        className="absolute top-4 left-4 right-4 bottom-[50%] md:bottom-[44%] z-20 rounded-2xl overflow-hidden shadow-xl"
         initial={false}
         animate={{ opacity: isCenter ? 1 : 0, y: isCenter ? 0 : 22, scale: isCenter ? 1 : 0.94 }}
         transition={{ type: "spring", stiffness: 280, damping: 24 }}
@@ -748,7 +748,7 @@ export function Portfolio() {
                     </motion.div>
 
                     <motion.h1 variants={fadeUp}
-                      className="text-5xl md:text-8xl lg:text-[9.5rem] font-display font-black leading-[0.82] tracking-tighter">
+                      className="text-6xl md:text-8xl lg:text-[9.5rem] font-display font-black leading-[1.05] md:leading-[0.82] tracking-tighter">
                       <span className="block text-white">Design</span>
                       <span className="block" style={{ WebkitTextStroke: "2px #F70670", color: "transparent" }}>AK</span>
                       <span className="block text-white">STUDIO</span>
@@ -787,7 +787,7 @@ export function Portfolio() {
                         whileHover={{ y: -6, boxShadow: "0 24px 60px -10px rgba(247,6,112,0.22)" }}
                         transition={{ duration: 0.28 }}>
                         <div>
-                          <h3 className={`text-3xl font-bold mb-2 leading-tight ${c.dark ? "text-white" : "text-black"}`}>{c.title}</h3>
+                          <h3 className={`text-2xl md:text-3xl font-bold mb-2 leading-tight ${c.dark ? "text-white" : "text-black"}`}>{c.title}</h3>
                           <p className={`text-xs leading-relaxed ${c.dark ? "text-white/35" : "text-black/45"}`}>{c.desc}</p>
                         </div>
                         <div className="w-10 h-10 bg-[#F70670] rounded-full flex items-center justify-center text-white self-end">
