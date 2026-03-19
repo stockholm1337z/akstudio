@@ -487,7 +487,8 @@ const Scene7 = memo(({ label }: { label: string }) => {
     };
   }, []);
 
-  const chars = label.split("");
+  const words = label.split(" ");
+  let charIndex = 0;
 
   return (
     <div ref={wrapRef} className="absolute inset-0 z-[1]">
@@ -507,36 +508,39 @@ const Scene7 = memo(({ label }: { label: string }) => {
           aria-label={label}
         >
           {/* Char-by-char heading */}
-          <div className="flex flex-wrap justify-center gap-[0_0.01em] transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-            {chars.map((ch, i) =>
-              ch === " " ? (
-                <span key={i} style={{ display: "inline-block", width: "0.22em" }} />
-              ) : (
-                <motion.span
-                  key={i}
-                  variants={{
-                    hidden: { opacity: 0, y: 60, rotateX: -80, filter: "blur(10px)" },
-                    visible: { 
-                      opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)",
-                      transition: { duration: 0.85, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }
-                    }
-                  }}
-                  className="font-display font-black tracking-tighter"
-                  style={{
-                    display:         "inline-block",
-                    fontSize:        "clamp(2.8rem, 8.5vw, 9rem)",
-                    lineHeight:      0.88,
-                    transformOrigin: "bottom center",
-                    background:      "linear-gradient(150deg,#ffffff 30%,rgba(255,255,255,0.65) 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip:  "text",
-                  }}
-                >
-                  {ch}
-                </motion.span>
-              )
-            )}
+          <div className="flex flex-wrap justify-center gap-x-[0.22em] gap-y-2 transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
+            {words.map((word, wIdx) => (
+              <div key={wIdx} className="flex whitespace-nowrap">
+                {word.split("").map((ch, cIdx) => {
+                  const i = charIndex++;
+                  return (
+                    <motion.span
+                      key={i}
+                      variants={{
+                        hidden: { opacity: 0, y: 60, rotateX: -80 },
+                        visible: { 
+                          opacity: 1, y: 0, rotateX: 0,
+                          transition: { duration: 0.85, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }
+                        }
+                      }}
+                      className="font-display font-black tracking-tighter"
+                      style={{
+                        display:         "inline-block",
+                        fontSize:        "clamp(2.8rem, 8.5vw, 9rem)",
+                        lineHeight:      0.88,
+                        transformOrigin: "bottom center",
+                        background:      "linear-gradient(150deg,#ffffff 30%,rgba(255,255,255,0.65) 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip:  "text",
+                      }}
+                    >
+                      {ch}
+                    </motion.span>
+                  );
+                })}
+              </div>
+            ))}
           </div>
 
           {/* Gradient underline */}
@@ -545,7 +549,7 @@ const Scene7 = memo(({ label }: { label: string }) => {
               hidden: { scaleX: 0, opacity: 0 },
               visible: { 
                 scaleX: 1, opacity: 1,
-                transition: { duration: 1.1, delay: chars.length * 0.05 + 0.2, ease: [0.16, 1, 0.3, 1] }
+                transition: { duration: 1.1, delay: label.length * 0.05 + 0.2, ease: [0.16, 1, 0.3, 1] }
               }
             }}
             className="transition-all duration-500 group-hover:h-[4px] group-hover:shadow-[0_0_20px_rgba(247,6,112,0.8)]"
@@ -1109,9 +1113,9 @@ export function Portfolio() {
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
             <div className="relative w-full h-[80vh] overflow-hidden -mt-20 md:-mt-24">
               <div className="absolute inset-x-0 top-7 md:top-5 z-[3]">
-                <Marquee items={["Start Project", "Start Project", "Start Project", "Start Project", "Start Project"]} />
+                <Marquee items={[t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject")]} />
               </div>
-              <Tag n="07" label="Start" />
+              <Tag n="07" label={t("portfolio.startProject")} />
               <Scene7 label={t("portfolio.startProject")} />
             </div>
             </div>
