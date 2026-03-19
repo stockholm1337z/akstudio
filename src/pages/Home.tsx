@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlowCard } from "../components/ui/GlowCard";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -94,7 +94,7 @@ export function Home() {
           </div>
         </motion.section>
 
-        {/* Testimonials */}
+        {/* Trailer */}
         <motion.section 
           initial="hidden"
           whileInView="visible"
@@ -103,43 +103,36 @@ export function Home() {
           className="mb-32"
         >
           <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-display font-bold mb-12 text-center">
-            {t('home.testimonials').split(' ').slice(0, -1).join(' ')} <span className="text-brand-pink">{t('home.testimonials').split(' ').slice(-1)}</span>
+            {t('home.trailer.title').split(' ').slice(0, -1).join(' ')} <span className="text-brand-pink">{t('home.trailer.title').split(' ').slice(-1)}</span>
           </motion.h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                name: t('home.testimonial1.author'),
-                role: t('home.testimonial1.role'),
-                text: t('home.testimonial1.text')
-              },
-              {
-                name: t('home.testimonial2.author'),
-                role: t('home.testimonial2.role'),
-                text: t('home.testimonial2.text')
-              }
-            ].map((review, i) => (
-              <motion.div 
-                key={i}
-                variants={fadeUp}
-                className="bg-gradient-to-br from-white/5 to-transparent border border-white/10 p-8 rounded-3xl relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                  <Star className="w-24 h-24 text-brand-pink" />
-                </div>
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-5 h-5 fill-brand-pink text-brand-pink" />
-                  ))}
-                </div>
-                <p className="text-lg text-white/80 mb-6 relative z-10">"{review.text}"</p>
-                <div className="relative z-10">
-                  <div className="font-bold font-display">{review.name}</div>
-                  <div className="text-sm text-white/40">{review.role}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div variants={fadeUp} className="relative z-10 w-full max-w-[1200px] mx-auto flex justify-center" style={{ mixBlendMode: "screen" }}>
+            <div
+              className="absolute left-1/2 top-1/2 h-[42%] w-[54%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-45"
+              style={{ background: "radial-gradient(circle, rgba(247,6,112,0.16) 0%, rgba(139,92,246,0.1) 38%, rgba(0,0,0,0) 78%)" }}
+            />
+            <div
+              className="relative z-10 w-full aspect-[16/10] md:aspect-[16/9]"
+              style={{
+                maskImage: "radial-gradient(ellipse at center, black 40%, transparent 70%)",
+                WebkitMaskImage: "radial-gradient(ellipse at center, black 40%, transparent 70%)",
+              }}
+            >
+              <video
+                src="/trailer.webm"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 h-full w-full object-cover scale-[1.22] md:scale-[1.12]"
+                style={{
+                  objectPosition: "center center",
+                  filter: "contrast(1.2) brightness(0.9)",
+                }}
+              />
+            </div>
+          </motion.div>
         </motion.section>
 
         {/* CTA */}
