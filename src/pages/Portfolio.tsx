@@ -487,8 +487,7 @@ const Scene7 = memo(({ label }: { label: string }) => {
     };
   }, []);
 
-  const words = label.split(" ");
-  let charIndex = 0;
+  const chars = Array.from(label);
 
   return (
     <div ref={wrapRef} className="absolute inset-0 z-[1]">
@@ -508,39 +507,38 @@ const Scene7 = memo(({ label }: { label: string }) => {
           aria-label={label}
         >
           {/* Char-by-char heading */}
-          <div className="flex flex-wrap justify-center gap-x-[0.22em] gap-y-2 transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-            {words.map((word, wIdx) => (
-              <div key={wIdx} className="flex whitespace-nowrap">
-                {word.split("").map((ch, cIdx) => {
-                  const i = charIndex++;
-                  return (
-                    <motion.span
-                      key={i}
-                      variants={{
-                        hidden: { opacity: 0, y: 60, rotateX: -80 },
-                        visible: { 
-                          opacity: 1, y: 0, rotateX: 0,
-                          transition: { duration: 0.85, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }
-                        }
-                      }}
-                      className="font-display font-black tracking-tighter"
-                      style={{
-                        display:         "inline-block",
-                        fontSize:        "clamp(2.8rem, 8.5vw, 9rem)",
-                        lineHeight:      0.88,
-                        transformOrigin: "bottom center",
-                        background:      "linear-gradient(150deg,#ffffff 30%,rgba(255,255,255,0.65) 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip:  "text",
-                      }}
-                    >
-                      {ch}
-                    </motion.span>
-                  );
-                })}
-              </div>
-            ))}
+          <div className="flex max-w-[min(90vw,1100px)] flex-wrap justify-center px-6 text-center transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
+            {chars.map((ch, i) => {
+              if (ch === " ") {
+                return <span key={`space-${i}`} className="w-[0.22em] md:w-[0.28em]" aria-hidden="true" />;
+              }
+
+              return (
+                <motion.span
+                  key={`${ch}-${i}`}
+                  variants={{
+                    hidden: { opacity: 0, y: 60, rotateX: -80 },
+                    visible: {
+                      opacity: 1, y: 0, rotateX: 0,
+                      transition: { duration: 0.85, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }
+                    }
+                  }}
+                  className="font-display font-black tracking-tighter"
+                  style={{
+                    display: "inline-block",
+                    fontSize: "clamp(2.8rem, 8.5vw, 9rem)",
+                    lineHeight: 0.88,
+                    transformOrigin: "bottom center",
+                    background: "linear-gradient(150deg,#ffffff 30%,rgba(255,255,255,0.65) 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  {ch}
+                </motion.span>
+              );
+            })}
           </div>
 
           {/* Gradient underline */}
@@ -624,6 +622,7 @@ export function Portfolio() {
   }, []);
 
   const ticker = ["UI/UX Design", "Brand Identity", "Web Dev", "Motion Graphics", "Corporate", "Creative Direction"];
+  const startProjectLabel = t("portfolio.startProject");
 
   // ── Shared section padding
   const SP = "px-6 md:px-14 lg:px-24";
@@ -1113,10 +1112,10 @@ export function Portfolio() {
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
             <div className="relative w-full h-[80vh] overflow-hidden -mt-20 md:-mt-24">
               <div className="absolute inset-x-0 top-7 md:top-5 z-[3]">
-                <Marquee items={[t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject"), t("portfolio.startProject")]} />
+                <Marquee items={[startProjectLabel, startProjectLabel, startProjectLabel, startProjectLabel, startProjectLabel]} />
               </div>
-              <Tag n="07" label={t("portfolio.startProject")} />
-              <Scene7 label={t("portfolio.startProject")} />
+              <Tag n="07" label={startProjectLabel} />
+              <Scene7 key={startProjectLabel} label={startProjectLabel} />
             </div>
             </div>
           </motion.div>
