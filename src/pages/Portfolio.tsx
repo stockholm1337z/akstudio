@@ -1,5 +1,5 @@
 import { motion, useScroll, useSpring } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, ArrowUpRight, RotateCw } from "lucide-react";
 import React, { useRef, useState, useMemo, useCallback, memo, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -162,6 +162,109 @@ const Tag = memo(({ n, label }: { n: string; label: string }) => (
   </div>
 ));
 
+type WhoServeCard = {
+  id: string;
+  bg: string;
+  num: string;
+  text: string;
+  content: string;
+  desc: string;
+  col?: string;
+  compact?: boolean;
+};
+
+const WhoServeFlipCard = memo(({
+  card,
+  index,
+  flipped,
+  onToggle,
+  className,
+}: {
+  card: WhoServeCard;
+  index: number;
+  flipped: boolean;
+  onToggle: () => void;
+  className: string;
+}) => {
+  const isCompact = Boolean(card.compact);
+  const iconShell = card.text === "text-black"
+    ? "border-black/10 bg-black/[0.04] text-black/65"
+    : "border-white/10 bg-white/[0.06] text-white/75";
+
+  const hintText = card.text === "text-black" ? "text-black/45" : "text-white/55";
+  const descText = card.text === "text-black" ? "text-black/68" : "text-white/72";
+  const shellPadding = isCompact ? "p-6 md:p-7" : "p-8";
+  const faceTitle = isCompact ? "text-lg md:text-[1.65rem]" : "text-xl";
+  const faceNumber = isCompact ? "text-4xl md:text-[2.7rem]" : "text-5xl";
+  const faceHint = isCompact ? "mt-3 text-[9px]" : "mt-5 text-[10px]";
+  const backDesc = isCompact ? "mt-3 text-[12px] md:text-[13px] leading-[1.45]" : "mt-5 text-sm leading-relaxed";
+  const footerHint = isCompact ? "text-[9px]" : "text-[10px]";
+
+  return (
+    <motion.button
+      type="button"
+      variants={fadeUp}
+      className={`group relative text-left [perspective:1600px] ${className}`}
+      onClick={onToggle}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.28 }}
+    >
+      <motion.div
+        className="relative h-full w-full"
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        <div
+          className={`${card.bg} absolute inset-0 rounded-[2.5rem] ${shellPadding} flex flex-col justify-between shadow-2xl z-10 overflow-hidden`}
+          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%)] opacity-80 pointer-events-none" />
+          <div className="relative z-10 flex items-start justify-between gap-4">
+            <div className={`${faceNumber} font-display font-medium ${card.num}`}>0{index + 1}</div>
+            <div className={`h-11 w-11 shrink-0 rounded-full border flex items-center justify-center transition-transform duration-500 group-hover:rotate-90 ${iconShell}`}>
+              <RotateCw size={16} />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <div className={`font-bold leading-tight whitespace-pre-line ${faceTitle} ${card.text}`}>{card.content}</div>
+            <div className={`${faceHint} font-bold uppercase tracking-[0.28em] ${hintText}`}>Tap to flip</div>
+          </div>
+        </div>
+
+        <div
+          className={`${card.bg} absolute inset-0 rounded-[2.5rem] ${shellPadding} flex flex-col shadow-2xl z-20 overflow-hidden`}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+          }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%)] opacity-80 pointer-events-none" />
+          <div className="relative z-10 flex items-start justify-between gap-4">
+            <div className={`text-sm font-bold uppercase tracking-[0.28em] ${hintText}`}>{isCompact ? "Info" : "Details"}</div>
+            <div className={`h-11 w-11 shrink-0 rounded-full border flex items-center justify-center ${iconShell}`}>
+              <RotateCw size={16} />
+            </div>
+          </div>
+          <div className={`relative z-10 ${isCompact ? "mt-2" : "mt-5"} flex-1 min-h-0 flex flex-col`}>
+            <div className={`font-bold leading-tight whitespace-pre-line ${faceTitle} ${card.text}`}>{card.content}</div>
+            <p
+              className={`${backDesc} ${descText} min-h-0 overflow-y-auto pr-1`}
+              style={{ scrollbarWidth: "none" }}
+            >
+              {card.desc}
+            </p>
+          </div>
+          {!isCompact && (
+            <div className={`relative z-10 mt-4 font-bold uppercase tracking-[0.28em] ${footerHint} ${hintText}`}>Tap to return</div>
+          )}
+        </div>
+      </motion.div>
+    </motion.button>
+  );
+});
+
 // ─── Project Card ─────────────────────────────────────────────────────────────
 const ProjectCard = memo(({ p, i, activeIndex, onClick }: any) => {
   const offset = i - activeIndex;
@@ -203,12 +306,30 @@ const ProjectCard = memo(({ p, i, activeIndex, onClick }: any) => {
           <p className="text-white/80 text-xs md:text-sm mb-8">{p.desc}</p>
         </motion.div>
         <motion.div
-          className="absolute -bottom-6 left-8 w-14 h-14 bg-white rounded-full flex items-center justify-center text-black shadow-2xl"
+          className="absolute -bottom-6 left-8 z-30"
           initial={false}
           animate={{ opacity: isCenter ? 1 : 0, scale: isCenter ? 1 : 0.4 }}
           transition={{ type: "spring", stiffness: 300, damping: 24, delay: isCenter ? 0.18 : 0 }}
         >
-          <ArrowUpRight size={22} />
+          <Link
+            to={`/portfolio/${p.slug}`}
+            aria-label={`Open project ${p.title}`}
+            className="group/project-btn relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-white text-black shadow-2xl transition-transform duration-300 hover:scale-110"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,rgba(247,6,112,0)_0deg,rgba(247,6,112,0.22)_95deg,rgba(255,255,255,0.98)_190deg,rgba(247,6,112,0.18)_290deg,rgba(247,6,112,0)_360deg)] opacity-0 transition-opacity duration-300 group-hover/project-btn:opacity-100" />
+            <span className="absolute inset-[1px] rounded-full bg-white" />
+            <motion.span
+              aria-hidden="true"
+              className="absolute inset-y-1 left-[-55%] w-[45%] rotate-[18deg] bg-gradient-to-r from-transparent via-white/85 to-transparent"
+              initial={false}
+              whileHover={{ left: "115%" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+            <span className="relative z-10 flex items-center justify-center transition-transform duration-300 group-hover/project-btn:-translate-y-[1px] group-hover/project-btn:translate-x-[1px]">
+              <ArrowUpRight size={22} />
+            </span>
+          </Link>
         </motion.div>
       </motion.div>
 
@@ -569,6 +690,7 @@ const Scene7 = memo(({ label }: { label: string }) => {
 export function Portfolio() {
   const [cardHeight, setCardHeight] = useState(0);
   const [compactHeight, setCompactHeight] = useState(0);
+  const [flippedWhoCards, setFlippedWhoCards] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
   const navigate = useNavigate();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -595,11 +717,11 @@ export function Portfolio() {
   }, []);
 
   const projects = useMemo(() => [
-    { title: t("portfolio.projects.1.title"), desc: t("portfolio.projects.1.desc"), img: "/landing1.jpg" },
-    { title: t("portfolio.projects.2.title"), desc: t("portfolio.projects.2.desc"), img: "/landing2.png" },
-    { title: t("portfolio.projects.3.title"), desc: t("portfolio.projects.3.desc"), img: "/landing3.png" },
-    { title: t("portfolio.projects.4.title"), desc: t("portfolio.projects.4.desc"), img: "/landing4.png" },
-    { title: t("portfolio.projects.5.title"), desc: t("portfolio.projects.5.desc"), img: "/landing5.png" },
+    { slug: "industrial-corporate-website", title: t("portfolio.projects.1.title"), desc: t("portfolio.projects.1.desc"), img: "/landing1.jpg" },
+    { slug: "biotech-platform", title: t("portfolio.projects.2.title"), desc: t("portfolio.projects.2.desc"), img: "/landing2.png" },
+    { slug: "ux-ui-portfolio", title: t("portfolio.projects.3.title"), desc: t("portfolio.projects.3.desc"), img: "/landing3.png" },
+    { slug: "cybersecurity-for-business", title: t("portfolio.projects.4.title"), desc: t("portfolio.projects.4.desc"), img: "/landing4.png" },
+    { slug: "digital-creative-studio", title: t("portfolio.projects.5.title"), desc: t("portfolio.projects.5.desc"), img: "/landing5.png" },
   ], [t]);
 
   const services = useMemo(() => [
@@ -621,8 +743,73 @@ export function Portfolio() {
     impactRef.current?.scrollBy({ left: dir === "left" ? -266 : 266, behavior: "smooth" });
   }, []);
 
+  const toggleWhoCard = useCallback((id: string) => {
+    setFlippedWhoCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  }, []);
+
   const ticker = ["UI/UX Design", "Brand Identity", "Web Dev", "Motion Graphics", "Corporate", "Creative Direction"];
   const startProjectLabel = t("portfolio.startProject");
+  const whoCards = useMemo<WhoServeCard[]>(() => [
+    {
+      id: "who-1",
+      col: "col-start-4 col-span-3",
+      bg: "bg-white",
+      num: "text-[#F70670]",
+      text: "text-black",
+      compact: true,
+      content: t("portfolio.who.card1"),
+      desc: t("portfolio.who.card1.desc"),
+    },
+    {
+      id: "who-2",
+      col: "col-start-7 col-span-5",
+      bg: "bg-gradient-to-br from-[#F70670] via-[#ff0055] to-[#9B0040]",
+      num: "text-white",
+      text: "text-white",
+      content: t("portfolio.who.card2.title"),
+      desc: t("portfolio.who.card2.desc"),
+    },
+    {
+      id: "who-3",
+      col: "col-start-2 col-span-3",
+      bg: "bg-gradient-to-br from-[#ff0055] to-[#F70670]",
+      num: "text-white",
+      text: "text-white",
+      compact: true,
+      content: t("portfolio.who.card3"),
+      desc: t("portfolio.who.card3.desc"),
+    },
+    {
+      id: "who-4",
+      col: "col-start-6 col-span-3",
+      bg: "bg-[#0c0c0c] border border-white/5",
+      num: "text-[#F70670]",
+      text: "text-white",
+      compact: true,
+      content: t("portfolio.who.card4"),
+      desc: t("portfolio.who.card4.desc"),
+    },
+    {
+      id: "who-5",
+      col: "col-start-4 col-span-3",
+      bg: "bg-white",
+      num: "text-[#F70670]",
+      text: "text-black",
+      compact: true,
+      content: t("portfolio.who.card5"),
+      desc: t("portfolio.who.card5.desc"),
+    },
+    {
+      id: "who-6",
+      col: "col-start-8 col-span-3",
+      bg: "bg-[#0c0c0c] border border-white/5",
+      num: "text-[#F70670]",
+      text: "text-white",
+      compact: true,
+      content: t("portfolio.who.card6"),
+      desc: t("portfolio.who.card6.desc"),
+    },
+  ], [t]);
 
   // ── Shared section padding
   const SP = "px-6 md:px-14 lg:px-24";
@@ -636,14 +823,14 @@ export function Portfolio() {
       {/* ╔═══════════════════════════════════════════════════════╗
           ║              THE BIG VERTICAL CARD                   ║
           ╚═══════════════════════════════════════════════════════╝ */}
-      <div className="relative w-full max-w-[1440px] mx-auto px-4 md:px-8 z-10 flex justify-center">
+      <div className="relative w-full max-w-[1440px] mx-auto px-4 md:px-8 z-10 flex justify-center mb-10 md:mb-14">
         <motion.div
           ref={cardRef}
           className="w-full rounded-[2.5rem] md:rounded-[4rem] relative flex flex-col"
           style={{
             backdropFilter: "blur(0px)",
             boxShadow:
-              "inset 0 0 0 1px rgba(247,6,112,0.16), 0 0 24px rgba(247,6,112,0.16), 0 0 58px rgba(139,92,246,0.08)",
+              "inset 0 0 0 1px rgba(247,6,112,0.16), 0 0 18px rgba(247,6,112,0.11), 0 0 34px rgba(139,92,246,0.05)",
             transformOrigin: "top center",
             willChange: "width, height, transform, background-color",
           }}
@@ -918,43 +1105,29 @@ export function Portfolio() {
 
               {/* Desktop zigzag */}
               <div className="relative z-10 w-full max-w-6xl mx-auto hidden md:grid grid-cols-12 gap-x-6 gap-y-8">
-                {[
-                  { col: "col-start-4 col-span-3", bg: "bg-white", num: "text-[#F70670]", text: "text-black", content: t("portfolio.who.card1") },
-                  { col: "col-start-7 col-span-5", bg: "bg-gradient-to-br from-[#F70670] via-[#ff0055] to-[#9B0040]", num: "text-white", text: "text-white",
-                    content: t("portfolio.who.card2.title"),
-                    extra: <div className="absolute top-8 right-8 text-white/70 text-xs max-w-[200px] leading-relaxed text-right z-10">{t("portfolio.who.card2.desc")}</div>
-                  },
-                  { col: "col-start-2 col-span-3", bg: "bg-gradient-to-br from-[#ff0055] to-[#F70670]", num: "text-white", text: "text-white", content: t("portfolio.who.card3") },
-                  { col: "col-start-6 col-span-3", bg: "bg-[#0c0c0c] border border-white/5", num: "text-[#F70670]", text: "text-white", content: t("portfolio.who.card4") },
-                  { col: "col-start-4 col-span-3", bg: "bg-white", num: "text-[#F70670]", text: "text-black", content: t("portfolio.who.card5") },
-                  { col: "col-start-8 col-span-3", bg: "bg-[#0c0c0c] border border-white/5", num: "text-[#F70670]", text: "text-white", content: t("portfolio.who.card6") },
-                ].map((c, i) => (
-                  <motion.div key={i} variants={fadeUp}
-                    className={`${c.col} aspect-square ${c.bg} rounded-[2.5rem] p-8 flex flex-col justify-between shadow-2xl z-10 relative overflow-hidden`}
-                    whileHover={{ y: -6 }} transition={{ duration: 0.28 }}>
-                    {c.extra}
-                    <div className={`text-5xl font-display font-medium ${c.num} relative z-10`}>0{i + 1}</div>
-                    <div className={`font-bold text-xl leading-tight whitespace-pre-line ${c.text} relative z-10`}>{c.content}</div>
-                  </motion.div>
+                {whoCards.map((card, i) => (
+                  <WhoServeFlipCard
+                    key={card.id}
+                    card={card}
+                    index={i}
+                    flipped={Boolean(flippedWhoCards[card.id])}
+                    onToggle={() => toggleWhoCard(card.id)}
+                    className={`${card.col} aspect-square`}
+                  />
                 ))}
               </div>
 
               {/* Mobile */}
               <div className="flex flex-col gap-5 md:hidden">
-                {[
-                  { bg: "bg-white", num: "text-[#F70670]", text: "text-black", content: t("portfolio.who.card1") },
-                  { bg: "bg-gradient-to-br from-[#F70670] to-[#9B0040]", num: "text-white", text: "text-white", content: t("portfolio.who.card2.title"), sub: t("portfolio.who.card2.desc") },
-                  { bg: "bg-gradient-to-br from-[#ff0055] to-[#F70670]", num: "text-white", text: "text-white", content: t("portfolio.who.card3") },
-                  { bg: "bg-[#0c0c0c] border border-white/5", num: "text-[#F70670]", text: "text-white", content: t("portfolio.who.card4") },
-                  { bg: "bg-white", num: "text-[#F70670]", text: "text-black", content: t("portfolio.who.card5") },
-                  { bg: "bg-[#0c0c0c] border border-white/5", num: "text-[#F70670]", text: "text-white", content: t("portfolio.who.card6") },
-                ].map((c, i) => (
-                  <motion.div key={i} variants={fadeUp}
-                    className={`w-full rounded-[2rem] p-8 flex flex-col justify-between min-h-[200px] ${c.bg}`}>
-                    <div className={`text-4xl font-display font-medium ${c.num}`}>0{i + 1}</div>
-                    {"sub" in c && <p className="text-white/65 text-xs leading-relaxed my-3">{(c as any).sub}</p>}
-                    <div className={`font-bold text-xl leading-tight whitespace-pre-line ${c.text}`}>{c.content}</div>
-                  </motion.div>
+                {whoCards.map((card, i) => (
+                  <WhoServeFlipCard
+                    key={`${card.id}-mobile`}
+                    card={card}
+                    index={i}
+                    flipped={Boolean(flippedWhoCards[card.id])}
+                    onToggle={() => toggleWhoCard(card.id)}
+                    className="w-full min-h-[220px]"
+                  />
                 ))}
               </div>
             </motion.div>
@@ -1053,7 +1226,7 @@ export function Portfolio() {
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
               variants={stagger}
-              className="pt-24 md:pt-32 pb-10 md:pb-14 flex items-center justify-center relative z-10 px-4 md:px-12">
+              className="pt-24 md:pt-32 pb-0 flex items-center justify-center relative z-10 px-4 md:px-12">
 
               <div className="w-full max-w-[1200px] mx-auto rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 overflow-hidden relative"
                 style={{
@@ -1105,16 +1278,12 @@ export function Portfolio() {
               </div>
             </motion.div>
 
-            <div className="relative">
+            <div className="relative mt-2 md:mt-0 z-0">
 
             {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                 SCENE 7 — START A PROJECT
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-            <div className="relative w-full h-[80vh] overflow-hidden -mt-20 md:-mt-24">
-              <div className="absolute inset-x-0 top-7 md:top-5 z-[3]">
-                <Marquee items={[startProjectLabel, startProjectLabel, startProjectLabel, startProjectLabel, startProjectLabel]} />
-              </div>
-              <Tag n="07" label={startProjectLabel} />
+            <div className="relative w-full h-[80vh] overflow-hidden">
               <Scene7 key={startProjectLabel} label={startProjectLabel} />
             </div>
             </div>

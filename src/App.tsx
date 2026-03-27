@@ -12,6 +12,8 @@ import { Home } from "./pages/Home";
 import { Portfolio } from "./pages/Portfolio";
 import { Pricing } from "./pages/Pricing";
 import { About } from "./pages/About";
+import { MorphLab } from "./pages/MorphLab";
+import { ProjectCase } from "./pages/ProjectCase";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
 function ScrollToTop() {
@@ -22,24 +24,37 @@ function ScrollToTop() {
   return null;
 }
 
+function AppShell() {
+  const { pathname } = useLocation();
+  const isMorphRoute = pathname === "/lab/morph" || pathname === "/MorphLab" || pathname === "/morphlab";
+
+  return (
+    <div className={`min-h-screen bg-brand-dark text-brand-light font-sans selection:bg-brand-pink/30 selection:text-white ${isMorphRoute ? "h-screen overflow-hidden" : ""}`}>
+      <GlowBackground />
+      <Navbar />
+      <main className={isMorphRoute ? "h-screen overflow-hidden" : ""}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/portfolio/:slug" element={<ProjectCase />} />
+          <Route path="/lab/morph" element={<MorphLab />} />
+          <Route path="/MorphLab" element={<MorphLab />} />
+          <Route path="/morphlab" element={<MorphLab />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </main>
+      {!isMorphRoute && <Footer />}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
         <ScrollToTop />
-        <div className="min-h-screen bg-brand-dark text-brand-light font-sans selection:bg-brand-pink/30 selection:text-white">
-          <GlowBackground />
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/about" element={<About />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AppShell />
       </BrowserRouter>
     </LanguageProvider>
   );

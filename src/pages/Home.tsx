@@ -21,7 +21,7 @@ export function Home() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen pt-32 pb-16 px-6 relative z-10">
+    <div className="min-h-screen pt-32 pb-16 px-6 relative z-10 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <motion.section 
@@ -100,38 +100,34 @@ export function Home() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="mb-32"
+          className="relative z-0 mb-0"
         >
           <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-display font-bold mb-12 text-center">
             {t('home.trailer.title').split(' ').slice(0, -1).join(' ')} <span className="text-brand-pink">{t('home.trailer.title').split(' ').slice(-1)}</span>
           </motion.h2>
           
-          <motion.div variants={fadeUp} className="relative z-10 w-full max-w-[1200px] mx-auto flex justify-center" style={{ mixBlendMode: "screen" }}>
-            <div
-              className="absolute left-1/2 top-1/2 h-[42%] w-[54%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-45"
-              style={{ background: "radial-gradient(circle, rgba(247,6,112,0.16) 0%, rgba(139,92,246,0.1) 38%, rgba(0,0,0,0) 78%)" }}
-            />
-            <div
-              className="relative z-10 w-full aspect-[16/10] md:aspect-[16/9]"
+          <motion.div
+            variants={fadeUp}
+            className="relative left-1/2 right-1/2 z-0 mt-12 h-[50vh] min-h-[340px] w-screen -translate-x-1/2 overflow-hidden md:mt-16 md:h-[72vh] md:min-h-[620px]"
+            style={{
+              maskImage: "radial-gradient(50% 50% at 50% 50%, black 40%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(50% 50% at 50% 50%, black 40%, transparent 100%)",
+            }}
+          >
+            <video
+              src="/trailer.webm"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 h-full w-full object-cover scale-[1.2] md:scale-[1.14]"
               style={{
-                maskImage: "radial-gradient(ellipse at center, black 40%, transparent 70%)",
-                WebkitMaskImage: "radial-gradient(ellipse at center, black 40%, transparent 70%)",
+                objectPosition: "center 48%",
+                filter: "saturate(0.94) contrast(1.02) brightness(0.8)",
               }}
-            >
-              <video
-                src="/trailer.webm"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                className="absolute inset-0 h-full w-full object-cover scale-[1.22] md:scale-[1.12]"
-                style={{
-                  objectPosition: "center center",
-                  filter: "contrast(1.2) brightness(0.9)",
-                }}
-              />
-            </div>
+            />
+            <div className="pointer-events-none absolute inset-0 bg-black/10" />
           </motion.div>
         </motion.section>
 
@@ -161,3 +157,4 @@ export function Home() {
     </div>
   );
 }
+
