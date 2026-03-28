@@ -12,7 +12,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative z-10 mt-6 overflow-hidden border-t border-white/8 bg-transparent">
+    <footer className="relative z-10 mt-6 overflow-hidden rounded-t-[2rem] border-t border-white/8 bg-transparent md:rounded-t-[2.75rem]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018)_24%,rgba(255,255,255,0.008)_100%)] backdrop-blur-xl" />
         <div className="absolute left-[8%] top-[-40px] h-28 w-56 rounded-full bg-[#F70670]/10 blur-3xl" />

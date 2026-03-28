@@ -204,7 +204,7 @@ const WhoServeFlipCard = memo(({
     <motion.button
       type="button"
       variants={fadeUp}
-      className={`group relative text-left [perspective:1600px] ${className}`}
+      className={`group relative block text-left [perspective:1600px] ${className}`}
       onClick={onToggle}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.28 }}
@@ -1126,7 +1126,7 @@ export function Portfolio() {
                     index={i}
                     flipped={Boolean(flippedWhoCards[card.id])}
                     onToggle={() => toggleWhoCard(card.id)}
-                    className="w-full min-h-[220px]"
+                    className="w-full h-[220px]"
                   />
                 ))}
               </div>
